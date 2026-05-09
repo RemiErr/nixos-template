@@ -35,6 +35,7 @@
               home-manager.useUserPackages    = true;
               home-manager.extraSpecialArgs   = { inherit inputs; };
               home-manager.users.user         = import ./home/default.nix; # CHANGE: replace "user" with your username (must match users.nix and home/default.nix)
+              home-manager.backupFileExtension = "bak";
             }
           ];
         };

@@ -133,32 +133,35 @@
   programs.noctalia-shell = {
     enable = true;
     settings = {
+      appLauncher = {
+        terminalCommand = "kitty -e";  # 預設 xterm -e 未安裝，改為 kitty
+      };
       bar = {
         position = "top";
         backgroundOpacity = 0.2;
-        cornerRadius = 12;
-        autoHide = {
-          enabled = true;
-          delay = 500;
-        };
+        frameRadius = 12;
+        displayMode = "auto_hide";
+        autoHideDelay = 500;
+        autoShowDelay = 150;
       };
       colorSchemes = {
         darkMode = true;
         generationMethod = "tonal-spot";
         useWallpaperColors = true;
       };
-      font = {
-        defaultFont = "JetBrainsMono Nerd Font";
-        monospaceFont = "JetBrainsMono Nerd Font";
-        fontScale = 1;
+      ui = {
+        fontDefault = "JetBrainsMono Nerd Font";
+        fontFixed = "JetBrainsMono Nerd Font";
       };
-      notification = {
-        position = "top_right";
+      notifications = {
+        location = "top_right";
         clearDismissed = true;
+        enabled = true;
       };
-      animation = {
-        speed = 1;
-        disabled = false;
+      general = {
+        animationSpeed = 1;
+        animationDisabled = false;
+        telemetryEnabled = false;
       };
     };
   };
