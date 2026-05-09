@@ -121,8 +121,7 @@
 
     // Firefox 畫中畫
     window-rule {
-        app-id    r#"firefox"#
-        title     r#"Picture-in-Picture"#
+        match app-id=r#"firefox"# title=r#"Picture-in-Picture"#
         open-floating true
     }
 
