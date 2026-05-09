@@ -49,6 +49,9 @@
     # 網路工具
     networkmanagerapplet  # 系統匣網路圖示
 
+    # 檔案管理器
+    yazi          # 終端機檔案管理器
+
     # 圖片檢視
     imv           # Wayland 原生圖片檢視器
 
