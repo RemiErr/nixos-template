@@ -15,6 +15,12 @@
   # 允許安裝 unfree 套件（如 NVIDIA 驅動等）
   nixpkgs.config.allowUnfree = true;
 
+  # ── VirtualBox Guest Additions ──────────────────────────────────
+  virtualisation.virtualbox.guest = {
+    enable      = true;
+    dragAndDrop = false;  # 避免 DragAndDrop 服務在 Wayland 下無限重啟
+  };
+
   # !! 必須與 home.stateVersion 一致，初次設定後不可修改 !!
   system.stateVersion = "25.11";
 }
