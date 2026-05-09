@@ -2,6 +2,7 @@
 
 {
   imports = [
+    inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
     ../modules/home/niri.nix      # 視窗管理器與鍵位設定
     ../modules/home/waybar.nix    # 狀態列
     ../modules/home/kitty.nix     # 終端機
@@ -126,6 +127,13 @@
       ".direnv"
       "result"
     ];
+  };
+
+  # ── Noctalia Shell ───────────────────────────────────────────────
+  programs.noctalia-shell = {
+    enable = true;
+    # settings / colors / plugins 等選項可在此設定，預設值均為 { }
+    # 詳見 example/pkg/noctalia-shell/nix/home-module.nix
   };
 
   # ── Home Manager 管理自身 ────────────────────────────────────────

@@ -8,6 +8,9 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # noctalia-shell 需要 nixos-unstable，不跟隨本 repo 的 nixpkgs
+    noctalia-shell.url = "github:noctalia-dev/noctalia-shell";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
