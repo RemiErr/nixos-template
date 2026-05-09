@@ -17,8 +17,6 @@
   home.username      = "user";        # CHANGE: replace with your username
   home.homeDirectory = "/home/user";  # CHANGE: replace "user" with your username
 
-  # ── 允許 unfree 套件 ─────────────────────────────────────────────
-  nixpkgs.config.allowUnfree = true;
 
   # ── 共用工具套件 ─────────────────────────────────────────────────
   home.packages = with pkgs; [
@@ -111,9 +109,9 @@
   # ── Git 設定 ─────────────────────────────────────────────────────
   programs.git = {
     enable = true;
-    userName  = "Your Name";        # CHANGE: your Git display name
-    userEmail = "your@email.com";   # CHANGE: your Git email address
-    extraConfig = {
+    settings = {
+      user.name  = "Your Name";        # CHANGE: your Git display name
+      user.email = "your@email.com";   # CHANGE: your Git email address
       init.defaultBranch = "main";
       pull.rebase        = false;
       core.editor        = "nvim";

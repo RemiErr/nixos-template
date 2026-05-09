@@ -47,7 +47,7 @@
     settings = {
       default_session = {
         # --remember：記住上次選擇的 session
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
         user    = "greeter";
       };
     };
