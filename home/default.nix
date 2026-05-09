@@ -4,7 +4,7 @@
   imports = [
     inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
     ../modules/home/niri.nix      # 視窗管理器與鍵位設定
-    ../modules/home/waybar.nix    # 狀態列
+    # ../modules/home/waybar.nix    # 狀態列
     ../modules/home/kitty.nix     # 終端機
     ../modules/home/fuzzel.nix    # 應用程式啟動器
     ../modules/home/mako.nix      # 通知
