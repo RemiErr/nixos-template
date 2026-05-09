@@ -171,19 +171,20 @@ sdb     16G disk              ← USB 開機碟
 
 ```bash
 # 建立 GPT 分割表（清除現有分割資訊）
-sudo parted /dev/sda -- mklabel gpt
+sudo parted -s /dev/sda mklabel gpt
 
 # EFI 分割區：1MB ~ 513MB = 512MB
-sudo parted /dev/sda -- mkpart ESP fat32 1MB 513MB
-sudo parted /dev/sda -- set 1 esp on
+sudo parted -s /dev/sda mkpart ESP fat32 1MB 513MB
+sudo parted -s /dev/sda set 1 esp on
 
 # Swap 分割區：513MB ~ 4.5GB = 4GB（依你的 RAM 調整）
-sudo parted /dev/sda -- mkpart primary linux-swap 513MB 8.5GB
+sudo parted -s /dev/sda mkpart primary linux-swap 513MB 4.5GB
 
 # Root 分割區：剩餘全部空間
-sudo parted /dev/sda -- mkpart primary ext4 8.5GB 100%
+sudo parted -s /dev/sda mkpart primary ext4 4.5GB 100%
 
 # 確認結果
+sudo parted /dev/sda print
 lsblk /dev/sda
 ```
 
