@@ -1,0 +1,47 @@
+{ config, pkgs, lib, ... }:
+
+{
+  # ── fcitx5 輸入法框架 + 新注音（chewing）────────────────────────
+  #
+  # NixOS 會自動：
+  #   1. 安裝 fcitx5 及指定附加元件
+  #   2. 建立 systemd user service（fcitx5.service）
+  #   3. 設定 XDG autostart
+  #   4. 注入必要環境變數
+  #
+  i18n.inputMethod = {
+    type = "fcitx5";                     # NixOS 25.05+ 語法（enabled 為舊語法）
+    fcitx5 = {
+      waylandFrontend = true;            # 使用 Wayland text-input-v3 原生協定
+                                         # 效能優於舊版 XIM 方式
+      addons = with pkgs; [
+        fcitx5-chewing                   # 新注音輸入法（libchewing）
+        fcitx5-gtk                       # GTK 整合模組
+        fcitx5-qt                        # Qt 整合模組
+        fcitx5-configtool                # 圖形化設定工具
+        fcitx5-material-color            # Material Design 主題
+      ];
+    };
+  };
+
+  # ── 輸入法環境變數 ───────────────────────────────────────────────
+  #
+  # 注意：啟用 waylandFrontend 後，現代 GTK4/Qt6 程式可透過 Wayland
+  #       原生協定自動使用 fcitx5，不需要 IM_MODULE 變數。
+  #       但為了相容舊版 GTK3/Qt5 及非 Wayland 程式，仍需設定。
+  #
+  environment.sessionVariables = {
+    GTK_IM_MODULE  = "fcitx";
+    QT_IM_MODULE   = "fcitx";
+    XMODIFIERS     = "@im=fcitx";
+    SDL_IM_MODULE  = "fcitx";
+    # GLFW_IM_MODULE 用於部分遊戲引擎（可選）
+    GLFW_IM_MODULE = "ibus";
+  };
+
+  # ── 首次設定提示 ─────────────────────────────────────────────────
+  # 登入後執行 fcitx5-configtool 即可：
+  #   1. 確認已新增「新注音」輸入法
+  #   2. 設定切換快捷鍵（預設 Ctrl+Space）
+  #   3. 若無法啟動 configtool，執行：fcitx5 -d && fcitx5-configtool
+}

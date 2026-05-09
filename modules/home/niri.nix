@@ -1,0 +1,231 @@
+{ config, pkgs, lib, ... }:
+
+{
+  home.packages = with pkgs; [
+    xwayland-satellite  # X11 應用程式相容層（無需重新編譯）
+    swayidle            # 閒置後自動鎖屏
+  ];
+
+  # ── 閒置管理（10 分鐘後鎖屏，20 分鐘後睡眠）────────────────────
+  services.swayidle = {
+    enable    = true;
+    timeouts  = [
+      { timeout = 600;  command = "${pkgs.hyprlock}/bin/hyprlock"; }
+      { timeout = 1200; command = "systemctl suspend"; }
+    ];
+    events = [
+      { event = "before-sleep"; command = "${pkgs.hyprlock}/bin/hyprlock"; }
+      { event = "lock";         command = "${pkgs.hyprlock}/bin/hyprlock"; }
+    ];
+  };
+
+  # ── niri 設定檔（KDL 格式）──────────────────────────────────────
+  # 文件：https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
+  # 查詢可用螢幕名稱：niri msg outputs
+  # 查詢可用按鍵名稱：niri msg event-stream （按鍵時查看輸出）
+  xdg.configFile."niri/config.kdl".text = ''
+    // ── 輸入裝置 ──────────────────────────────────────────────────
+    input {
+        keyboard {
+            xkb {
+                layout "us"
+                // fcitx5 處理中文輸入，此處維持 us 佈局
+            }
+            repeat-delay 500
+            repeat-rate  30
+        }
+
+        touchpad {
+            tap                         // 點擊即按下
+            natural-scroll              // 自然捲動
+            accel-speed 0.2
+            accel-profile "adaptive"
+            scroll-method "two-finger"
+            dwt                         // 打字時停用（disable while typing）
+        }
+
+        mouse {
+            accel-speed 0.0
+            accel-profile "flat"
+        }
+
+        focus-follows-mouse max-scroll-amount="0%"
+        warp-mouse-to-focus
+    }
+
+    // ── 螢幕設定 ────────────────────────────────────────────────
+    // 查詢螢幕名稱：niri msg outputs
+    // 縮放比例 1.25 適合 2K 螢幕，1.5 適合 4K
+    output "eDP-1" {
+        scale 1.0
+        // mode "1920x1080@60.000"  // 取消注解以強制指定解析度
+    }
+    // 外接螢幕範例：
+    // output "HDMI-A-1" {
+    //     scale 1.0
+    //     position x=1920 y=0
+    // }
+
+    // ── 版面配置 ────────────────────────────────────────────────
+    layout {
+        gaps 12
+        center-focused-column "never"
+        always-center-single-column
+
+        preset-column-widths {
+            proportion 0.333
+            proportion 0.5
+            proportion 0.667
+            proportion 1.0
+        }
+
+        default-column-width { proportion 0.5; }
+
+        focus-ring {
+            width 2
+            active-color   "#89b4fa"  // Catppuccin Blue
+            inactive-color "#313244"
+        }
+
+        border { off }
+
+        struts {
+            left   0
+            right  0
+            top    0
+            bottom 0
+        }
+    }
+
+    // ── 啟動時執行 ──────────────────────────────────────────────
+    // waybar / mako / swww / fcitx5 由 systemd user service 管理，
+    // 此處只啟動沒有 systemd 服務的程式
+    spawn-at-startup "xwayland-satellite"
+    spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store &"
+
+    prefer-no-csd
+
+    screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+    animations {
+        slowdown 1.0
+    }
+
+    // ── 視窗通用規則 ────────────────────────────────────────────
+    window-rule {
+        geometry-corner-radius 8
+        clip-to-geometry true
+    }
+
+    // Firefox 畫中畫
+    window-rule {
+        app-id    r#"firefox"#
+        title     r#"Picture-in-Picture"#
+        open-floating true
+    }
+
+    // ── 按鍵綁定 ────────────────────────────────────────────────
+    // Mod = Super/Windows 鍵
+    // 查看所有可用 action：niri msg action list
+
+    binds {
+        // ── 應用程式 ─────────────────────────────────────────
+        Mod+Return      { spawn "kitty"; }
+        Mod+D           { spawn "fuzzel"; }
+        Mod+Ctrl+L      { spawn "hyprlock"; }
+        Mod+Shift+E     { spawn "wlogout"; }
+
+        // 截圖（grim + slurp）
+        Print           { screenshot; }
+        Ctrl+Print      { screenshot-screen; }
+        Alt+Print       { screenshot-window; }
+        Mod+Shift+S     { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
+
+        // 剪貼簿歷史
+        Mod+V           { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+
+        // ── 視窗焦點（vim 鍵 + 方向鍵）──────────────────────
+        Mod+H           { focus-column-left; }
+        Mod+L           { focus-column-right; }
+        Mod+J           { focus-window-down; }
+        Mod+K           { focus-window-up; }
+        Mod+Left        { focus-column-left; }
+        Mod+Right       { focus-column-right; }
+        Mod+Down        { focus-window-down; }
+        Mod+Up          { focus-window-up; }
+
+        // 焦點跳到欄首/欄尾
+        Mod+Home        { focus-column-first; }
+        Mod+End         { focus-column-last; }
+
+        // ── 視窗移動 ─────────────────────────────────────────
+        Mod+Shift+H     { move-column-left; }
+        Mod+Shift+L     { move-column-right; }
+        Mod+Shift+J     { move-window-down; }
+        Mod+Shift+K     { move-window-up; }
+        Mod+Shift+Left  { move-column-left; }
+        Mod+Shift+Right { move-column-right; }
+        Mod+Shift+Down  { move-window-down; }
+        Mod+Shift+Up    { move-window-up; }
+        Mod+Shift+Home  { move-column-to-first; }
+        Mod+Shift+End   { move-column-to-last; }
+
+        // ── 視窗大小 ─────────────────────────────────────────
+        Mod+R           { switch-preset-column-width; }
+        Mod+Shift+R     { reset-window-height; }
+        Mod+F           { maximize-column; }
+        Mod+Shift+F     { fullscreen-window; }
+        Mod+C           { center-column; }
+        Mod+Minus       { set-column-width "-10%"; }
+        Mod+Equal       { set-column-width "+10%"; }
+        Mod+Shift+Minus { set-window-height "-10%"; }
+        Mod+Shift+Equal { set-window-height "+10%"; }
+
+        // ── 視窗管理 ─────────────────────────────────────────
+        Mod+Q           { close-window; }
+        Mod+T           { toggle-window-floating; }
+        Mod+Shift+C     { consume-window-into-column; }
+        Mod+Shift+X     { expel-window-from-column; }
+
+        // ── 工作區 ───────────────────────────────────────────
+        Mod+1           { focus-workspace 1; }
+        Mod+2           { focus-workspace 2; }
+        Mod+3           { focus-workspace 3; }
+        Mod+4           { focus-workspace 4; }
+        Mod+5           { focus-workspace 5; }
+        Mod+6           { focus-workspace 6; }
+        Mod+7           { focus-workspace 7; }
+        Mod+8           { focus-workspace 8; }
+        Mod+9           { focus-workspace 9; }
+        Mod+Shift+1     { move-column-to-workspace 1; }
+        Mod+Shift+2     { move-column-to-workspace 2; }
+        Mod+Shift+3     { move-column-to-workspace 3; }
+        Mod+Shift+4     { move-column-to-workspace 4; }
+        Mod+Shift+5     { move-column-to-workspace 5; }
+        Mod+Shift+6     { move-column-to-workspace 6; }
+        Mod+Shift+7     { move-column-to-workspace 7; }
+        Mod+Shift+8     { move-column-to-workspace 8; }
+        Mod+Shift+9     { move-column-to-workspace 9; }
+        Mod+Tab         { focus-workspace-previous; }
+        Mod+Page_Down   { focus-workspace-down; }
+        Mod+Page_Up     { focus-workspace-up; }
+        Mod+Ctrl+Down   { move-column-to-workspace-down; }
+        Mod+Ctrl+Up     { move-column-to-workspace-up; }
+
+        // ── 系統媒體 / 音量 / 亮度 ───────────────────────────
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+        XF86AudioMute         allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+        XF86AudioMicMute      { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+        XF86MonBrightnessUp   { spawn "brightnessctl" "set" "10%+"; }
+        XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+        XF86AudioPlay         { spawn "playerctl" "play-pause"; }
+        XF86AudioNext         { spawn "playerctl" "next"; }
+        XF86AudioPrev         { spawn "playerctl" "previous"; }
+
+        // ── niri 說明 ────────────────────────────────────────
+        Mod+Shift+Slash { show-hotkey-overlay; }
+        Mod+Escape      { spawn "sh" "-c" "niri msg action quit --skip-confirmation"; }
+    }
+  '';
+}
