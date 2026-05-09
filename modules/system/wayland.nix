@@ -87,6 +87,8 @@
       # JetBrains Mono Nerd Font（終端機 / 程式碼）
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
+      material-design-icons        # noctalia-shell 圖示字型
+      lxgw-wenkai-screen           # 霞鶩文楷（繁體中文顯示字型）
     ];
     fontconfig = {
       defaultFonts = {

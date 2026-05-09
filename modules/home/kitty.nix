@@ -11,7 +11,8 @@
 
     settings = {
       # ── 視窗外觀 ──────────────────────────────────────────────
-      background_opacity   = "0.95";
+      background_opacity   = "0.93";
+      background_blur      = 1;        # 需要 niri ≥ v26.04
       window_padding_width = "12";
       confirm_os_window_close = "0";
       hide_window_decorations = "yes";   # 由 niri 管理裝飾

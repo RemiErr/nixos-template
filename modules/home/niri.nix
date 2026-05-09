@@ -68,7 +68,7 @@
 
     // ── 版面配置 ────────────────────────────────────────────────
     layout {
-        gaps 12
+        gaps 10
         center-focused-column "never"
         always-center-single-column
 
@@ -91,6 +91,14 @@
             off
         }
 
+        shadow {
+            on
+            softness 20
+            spread 2
+            offset x=-4 y=-4
+            color "rgba(0, 0, 0, 0.7)"
+        }
+
         struts {
             left   0
             right  0
@@ -111,12 +119,30 @@
     screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
     animations {
-        slowdown 1.0
+        slowdown 0.98
+        workspace-switch {
+            spring damping-ratio=0.82 stiffness=400 epsilon=0.0001
+        }
+        horizontal-view-movement {
+            spring damping-ratio=0.84 stiffness=400 epsilon=0.0001
+        }
+        window-open {
+            spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        }
+        window-close {
+            spring damping-ratio=0.8 stiffness=400 epsilon=0.0001
+        }
+        window-movement {
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+        }
+        window-resize {
+            spring damping-ratio=0.9 stiffness=500 epsilon=0.0001
+        }
     }
 
     // ── 視窗通用規則 ────────────────────────────────────────────
     window-rule {
-        geometry-corner-radius 8
+        geometry-corner-radius 20
         clip-to-geometry true
     }
 

@@ -132,8 +132,35 @@
   # ── Noctalia Shell ───────────────────────────────────────────────
   programs.noctalia-shell = {
     enable = true;
-    # settings / colors / plugins 等選項可在此設定，預設值均為 { }
-    # 詳見 example/pkg/noctalia-shell/nix/home-module.nix
+    settings = {
+      bar = {
+        position = "top";
+        backgroundOpacity = 0.2;
+        cornerRadius = 12;
+        autoHide = {
+          enabled = true;
+          delay = 500;
+        };
+      };
+      colorSchemes = {
+        darkMode = true;
+        generationMethod = "tonal-spot";
+        useWallpaperColors = true;
+      };
+      font = {
+        defaultFont = "JetBrainsMono Nerd Font";
+        monospaceFont = "JetBrainsMono Nerd Font";
+        fontScale = 1;
+      };
+      notification = {
+        position = "top_right";
+        clearDismissed = true;
+      };
+      animation = {
+        speed = 1;
+        disabled = false;
+      };
+    };
   };
 
   # ── Home Manager 管理自身 ────────────────────────────────────────
