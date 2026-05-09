@@ -87,7 +87,9 @@
             inactive-color "#313244"
         }
 
-        border { off }
+        border {
+            off
+        }
 
         struts {
             left   0
