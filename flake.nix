@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";  # 僅用於 niri（blur 支援）
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -30,6 +31,10 @@
           modules = [
             ./hosts/nixos/configuration.nix
             home-manager.nixosModules.home-manager
+            {
+              # niri 從 unstable 取得以支援 background_blur
+              programs.niri.package = inputs.nixpkgs-unstable.legacyPackages.${system}.niri;
+            }
             {
               home-manager.useGlobalPkgs      = true;
               home-manager.useUserPackages    = true;
