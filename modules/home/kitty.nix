@@ -22,33 +22,33 @@
       cursor_trail = 1;
 
       # ── 配色 ──────────────────────────────────────────────────
-      foreground            = "#dfdedb";
-      background            = "#182029";
-      cursor                = "#e0e2e8";
-      cursor_text_color     = "#c2c7ce";
-      selection_foreground  = "#23323f";
-      selection_background  = "#a8c2d3";
-      url_color             = "#79c9dd";
+      foreground            = "#CFC6A9";
+      background            = "#141311";
+      cursor                = "#FFB4AB";
+      cursor_text_color     = "#141311";
+      selection_foreground  = "#211F1D";
+      selection_background  = "#CCC6B8";
+      url_color             = "#62938F";
       url_style             = "curly";
 
-      # 一般色彩
-      color0  = "#524249";   # 黑（暗）
-      color1  = "#cd8797";   # 紅
-      color2  = "#92c09d";   # 綠
-      color3  = "#cacd9f";   # 黃
-      color4  = "#88b6f2";   # 藍
-      color5  = "#cca3cf";   # 洋紅
-      color6  = "#98bdc7";   # 青
-      color7  = "#d1e3ee";   # 白（暗）
-      # 亮色彩
-      color8  = "#757388";
-      color9  = "#e3929a";
-      color10 = "#9dd6a0";
-      color11 = "#dccba2";
-      color12 = "#96a2d7";
-      color13 = "#dea9d6";
-      color14 = "#9adbca";
-      color15 = "#bdcede";
+      # 一般色彩（dim）
+      color0  = "#211F1D";   # 黑
+      color1  = "#A66359";   # 紅
+      color2  = "#6F895C";   # 綠
+      color3  = "#AB9349";   # 黃
+      color4  = "#627394";   # 藍
+      color5  = "#93627E";   # 洋紅
+      color6  = "#62938F";   # 青
+      color7  = "#CCC6B8";   # 白
+      # 亮色彩（bright）
+      color8  = "#49473D";
+      color9  = "#FFB4AB";
+      color10 = "#BFCAB4";
+      color11 = "#CFC6A9";
+      color12 = "#A9B5C6";
+      color13 = "#C6A9BA";
+      color14 = "#ADC2C1";
+      color15 = "#DDD7C3";
 
       # ── 行為 ──────────────────────────────────────────────────
       enable_audio_bell      = "no";
