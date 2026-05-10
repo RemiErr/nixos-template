@@ -89,12 +89,13 @@
       nerd-fonts.symbols-only
       material-design-icons        # noctalia-shell 圖示字型
       lxgw-wenkai-screen           # 霞鶩文楷（繁體中文顯示字型）
+      maple-mono.NF-unhinted       # Maple Mono NF
     ];
     fontconfig = {
       defaultFonts = {
         serif     = [ "Noto Serif CJK TC" "Noto Serif" ];
         sansSerif = [ "Noto Sans CJK TC"  "Noto Sans" ];
-        monospace = [ "JetBrainsMono Nerd Font" "Noto Sans Mono CJK TC" ];
+        monospace = [ "Maple Mono NF" "JetBrainsMono Nerd Font" "Noto Sans Mono CJK TC" ];
         emoji     = [ "Noto Color Emoji" ];
       };
     };

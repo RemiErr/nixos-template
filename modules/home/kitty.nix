@@ -5,7 +5,7 @@
     enable = true;
 
     font = {
-      name = "JetBrainsMono Nerd Font";
+      name = "Maple Mono NF";
       size = 13;
     };
 
@@ -17,34 +17,38 @@
       confirm_os_window_close = "0";
       hide_window_decorations = "yes";   # 由 niri 管理裝飾
 
-      # ── Catppuccin Mocha 配色 ─────────────────────────────────
-      foreground            = "#CDD6F4";
-      background            = "#1E1E2E";
-      selection_foreground  = "#1E1E2E";
-      selection_background  = "#F5E0DC";
-      cursor                = "#F5E0DC";
-      cursor_text_color     = "#1E1E2E";
-      url_color             = "#F5E0DC";
+      # ── cursor ───────────────────────────────────────────────
+      cursor_shape = "block";
+      cursor_trail = 1;
+
+      # ── 配色 ──────────────────────────────────────────────────
+      foreground            = "#dfdedb";
+      background            = "#182029";
+      cursor                = "#e0e2e8";
+      cursor_text_color     = "#c2c7ce";
+      selection_foreground  = "#23323f";
+      selection_background  = "#a8c2d3";
+      url_color             = "#79c9dd";
       url_style             = "curly";
 
       # 一般色彩
-      color0  = "#45475A";   # 黑（暗）
-      color1  = "#F38BA8";   # 紅
-      color2  = "#A6E3A1";   # 綠
-      color3  = "#F9E2AF";   # 黃
-      color4  = "#89B4FA";   # 藍
-      color5  = "#F5C2E7";   # 洋紅
-      color6  = "#94E2D5";   # 青
-      color7  = "#BAC2DE";   # 白（暗）
+      color0  = "#524249";   # 黑（暗）
+      color1  = "#cd8797";   # 紅
+      color2  = "#92c09d";   # 綠
+      color3  = "#cacd9f";   # 黃
+      color4  = "#88b6f2";   # 藍
+      color5  = "#cca3cf";   # 洋紅
+      color6  = "#98bdc7";   # 青
+      color7  = "#d1e3ee";   # 白（暗）
       # 亮色彩
-      color8  = "#585B70";
-      color9  = "#F38BA8";
-      color10 = "#A6E3A1";
-      color11 = "#F9E2AF";
-      color12 = "#89B4FA";
-      color13 = "#F5C2E7";
-      color14 = "#94E2D5";
-      color15 = "#A6ADC8";
+      color8  = "#757388";
+      color9  = "#e3929a";
+      color10 = "#9dd6a0";
+      color11 = "#dccba2";
+      color12 = "#96a2d7";
+      color13 = "#dea9d6";
+      color14 = "#9adbca";
+      color15 = "#bdcede";
 
       # ── 行為 ──────────────────────────────────────────────────
       enable_audio_bell      = "no";

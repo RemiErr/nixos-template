@@ -155,9 +155,29 @@
         position = "top";
         backgroundOpacity = 0.2;
         frameRadius = 12;
+        barType = "simple";
         displayMode = "auto_hide";
         autoHideDelay = 500;
         autoShowDelay = 150;
+        widgetSpacing = 6;
+        outerCorners = true;
+        widgets = {
+          left = [
+            { id = "Launcher"; icon = "rocket"; }
+            { id = "Clock"; formatHorizontal = "HH:mm ddd, MMM dd"; }
+            { id = "ActiveWindow"; maxWidth = 145; showIcon = true; showText = true; hideMode = "hidden"; }
+          ];
+          center = [
+            { id = "Workspace"; labelMode = "index"; hideUnoccupied = false; }
+          ];
+          right = [
+            { id = "NotificationHistory"; showUnreadBadge = true; }
+            { id = "Volume"; middleClickCommand = "pavucontrol"; }
+            { id = "Brightness"; }
+            { id = "Tray"; }
+            { id = "ControlCenter"; icon = "noctalia"; useDistroLogo = true; }
+          ];
+        };
       };
       colorSchemes = {
         darkMode = true;
@@ -167,6 +187,9 @@
       ui = {
         fontDefault = "JetBrainsMono Nerd Font";
         fontFixed = "JetBrainsMono Nerd Font";
+        panelBackgroundOpacity = 0.85;
+        panelsAttachedToBar = true;
+        tooltipsEnabled = true;
       };
       notifications = {
         location = "top_right";
@@ -177,6 +200,11 @@
         animationSpeed = 1;
         animationDisabled = false;
         telemetryEnabled = false;
+        enableBlurBehind = true;
+        enableShadows = true;
+        clockFormat = "hh\\nmm";
+        clockStyle = "custom";
+        radiusRatio = 1;
       };
     };
   };
