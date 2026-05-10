@@ -156,7 +156,7 @@
         backgroundOpacity = 0.2;
         frameRadius = 12;
         barType = "simple";
-        displayMode = "auto_hide";
+        # displayMode = "auto_hide";
         autoHideDelay = 500;
         autoShowDelay = 150;
         widgetSpacing = 6;
