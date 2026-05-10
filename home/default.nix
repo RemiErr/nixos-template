@@ -7,6 +7,7 @@
     ../modules/home/kitty.nix       # 終端機
     ../modules/home/fuzzel.nix      # 應用程式啟動器
     ../modules/home/hyprlock.nix    # 鎖屏
+    ../modules/home/fastfetch.nix   # 系統資訊
     # ../modules/home/waybar.nix    # 狀態列（改用 noctalia-shell Bar）
     # ../modules/home/mako.nix      # 通知（改用 noctalia-shell Notification）
     # ../modules/home/swww.nix      # 桌布管理（改用 noctalia-shell Background）
@@ -45,7 +46,6 @@
 
     # 系統監控
     btop
-    neofetch
 
     # 網路工具
     networkmanagerapplet  # 系統匣網路圖示
