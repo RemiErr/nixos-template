@@ -263,7 +263,7 @@ Nix flake 只讀取 git 追蹤的檔案。`hardware-configuration.nix` 已在 `.
 
 ```bash
 cd /tmp/nixos-config
-git add hosts/nixos/hardware-configuration.nix
+git add -f hosts/nixos/hardware-configuration.nix
 ```
 
 不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。
