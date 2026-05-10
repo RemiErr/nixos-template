@@ -123,10 +123,22 @@
       pull.rebase        = false;
       core.editor        = "nvim";
       diff.tool          = "vimdiff";
+
+      alias = {
+        # common aliases
+        st = "status";
+        br = "branch";
+        co = "checkout";
+        cm = "commit -m";
+        ca = "commit -am";
+        dc = "diff --cached";
+      };
     };
+
     ignores = [
       ".DS_Store"
       "*.swp"
+      "*.env"
       ".direnv"
       "result"
     ];
