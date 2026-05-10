@@ -257,6 +257,17 @@ cat /tmp/nixos-config/hosts/nixos/hardware-configuration.nix
 # 查看是否有 fileSystems."/" 和 fileSystems."/boot"
 ```
 
+**讓 Nix 看到這個檔案**：
+
+Nix flake 只讀取 git 追蹤的檔案。`hardware-configuration.nix` 已在 `.gitignore` 中排除（機器專屬、不應提交），因此需要手動 stage：
+
+```bash
+cd /tmp/nixos-config
+git add hosts/nixos/hardware-configuration.nix
+```
+
+不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。
+
 > ⚠️ **注意**：`hardware-configuration.nix` 每台機器都不同，***絕對不可以*** 複製他人的檔案來使用！！
 
 ---
