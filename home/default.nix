@@ -3,14 +3,14 @@
 {
   imports = [
     inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
-    ../modules/home/niri.nix      # 視窗管理器與鍵位設定
+    ../modules/home/niri.nix        # 視窗管理器與鍵位設定
+    ../modules/home/kitty.nix       # 終端機
+    ../modules/home/fuzzel.nix      # 應用程式啟動器
+    ../modules/home/hyprlock.nix    # 鎖屏
     # ../modules/home/waybar.nix    # 狀態列（改用 noctalia-shell Bar）
-    ../modules/home/kitty.nix     # 終端機
-    ../modules/home/fuzzel.nix    # 應用程式啟動器
     # ../modules/home/mako.nix      # 通知（改用 noctalia-shell Notification）
     # ../modules/home/swww.nix      # 桌布管理（改用 noctalia-shell Background）
     # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia-shell SessionMenu）
-    ../modules/home/hyprlock.nix  # 鎖屏
   ];
 
   # ── 使用者資訊（必須與 NixOS users.users 一致）───────────────────
@@ -92,6 +92,9 @@
       ll      = "ls -lahF --color=auto";
       la      = "ls -A --color=auto";
       grep    = "grep --color=auto";
+      cls     = "clear";
+      sos     = "source";
+      py      = "python3";
       # NixOS 系統更新（改為你的 hostname）
       update  = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
       # Home Manager 更新
