@@ -111,7 +111,7 @@
 
     // ── 啟動時執行 ──────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d" "--replace"
-    spawn-at-startup "noctalia-shell"
+    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none noctalia-shell"
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store &"
 
