@@ -5,11 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 常用指令
 
 ```bash
-# 重建系統設定
-sudo nixos-rebuild switch --flake ~/nixos-config#nixos
-
-# 重建 Home Manager 設定（需替換為實際使用者名稱）
-home-manager switch --flake ~/nixos-config#user@nixos
+# 重建系統設定（hostname 由 variables.nix 決定）
+sudo nixos-rebuild switch --flake ~/nixos-config#<hostname>
 
 # 更新所有 flake inputs
 nix flake update
@@ -22,11 +19,18 @@ nix-collect-garbage -d
 
 這是一個基於 **NixOS Flakes** 的模組化設定，使用 **Niri**（磁磚式 Wayland 視窗管理器）並支援繁體中文輸入（fcitx5 + 注音）。
 
+設計為**可被外部 flake 引用的模板**：使用者不需 clone 本 repo，透過 `inputs.nixos-template.url = "github:RemiErr/nixos-config"` 引用後，只需維護自己的 `variables.nix` 即可。
+
 ### 目錄結構
 
 ```
-flake.nix              # 入口：inputs/outputs，宣告所有 nixpkgs 版本與主機
-hosts/nixos/           # 主機層設定（hostname、hardware-configuration.nix）
+flake.nix              # 入口：exports nixosModules.default / homeModules.default
+variables.nix          # 個人值（gitignored，從 variables.nix.example 複製）
+variables.nix.example  # 範本，committed，含所有需填入的 placeholder
+.config/               # 使用者 overlay 範例結構（可直接 clone 使用）
+  flake.nix            # 引用本 repo 作為 template 的完整範例
+  variables.nix        # placeholder 值（committed 作為示範）
+hosts/nixos/           # 主機層設定（hostname 由 vars 注入）
 modules/system/        # NixOS 系統模組
   common.nix           # Nix 設定、時區(Asia/Taipei)、locale、基礎套件
   wayland.nix          # Niri、XDG portal、PipeWire、greetd、字型
@@ -34,36 +38,46 @@ modules/system/        # NixOS 系統模組
   users.nix            # 使用者帳號、NetworkManager
 modules/home/          # Home Manager 模組（每個元件獨立一檔）
   niri.nix             # 視窗管理器設定 + 快捷鍵（KDL 格式）
-  waybar.nix           # 狀態列（Catppuccin Mocha 主題）
-  kitty.nix            # 終端機
+  foot.nix             # 終端機（foot）
+  fish.nix             # Shell（fish）
   fuzzel.nix           # 應用程式啟動器
-  mako.nix             # 桌面通知
-  swww.nix             # 桌布管理（systemd user service）
-  wlogout.nix          # 登出選單
   hyprlock.nix         # 鎖定畫面
+  fastfetch.nix        # 系統資訊
 home/default.nix       # Home Manager 入口，彙整所有 home 模組
 ```
+
+### variables.nix 設計
+
+所有使用者相關的個人值集中在 `variables.nix`（gitignored），透過 `specialArgs` / `extraSpecialArgs` 傳入所有模組：
+
+```nix
+{
+  username        = "shiichi";
+  hostname        = "my-machine";
+  homeDirectory   = "/home/shiichi";
+  userDescription = "Shiichi";
+  git = {
+    name  = "RemiErr";
+    email = "re.err236@gmail.com";
+  };
+}
+```
+
+各模組透過函式參數 `{ vars, ... }:` 接收這些值，不再有任何硬編碼的 `# CHANGE:` 位置。
 
 ### Flake 設計
 
 - **nixpkgs**：`nixos-25.11`
 - **home-manager**：`release-25.11`
-- 主機設定 `"nixos"`，使用者設定 `"user@nixos"`
-- 若要新增主機，在 `flake.nix` 的 `nixosConfigurations` 與 `homeConfigurations` 各加一條，並在 `hosts/` 下建對應目錄
+- **module exports**：`nixosModules.default`（系統模組）、`homeModules.default`（home 模組）
+- `vars` 從 `variables.nix` import，透過 `specialArgs` / `extraSpecialArgs` 傳入所有模組
 
 ### 模組整合方式
 
-`hosts/nixos/configuration.nix` 匯入全部 `modules/system/` 模組；`home/default.nix` 匯入全部 `modules/home/` 模組。Home Manager 透過 `nixosModules.homeManager` 整合進系統設定，不需要獨立執行。
+`hosts/nixos/configuration.nix` 匯入全部 `modules/system/` 模組；`home/default.nix` 匯入全部 `modules/home/` 模組。Home Manager 透過 `home-manager.nixosModules.home-manager` 整合進系統設定。
 
-### 主題與視覺一致性
+### 客製化重點（維護者）
 
-所有使用者介面元件（waybar、kitty、fuzzel、mako、wlogout、hyprlock）統一使用 **Catppuccin Mocha** 調色盤，修改顏色時應保持全局一致。
-
-### 客製化重點
-
-三個需在新機器上修改的關鍵位置：
-1. `flake.nix`：主機名稱與使用者名稱
-2. `home/default.nix`：`home.username` / `home.homeDirectory`
-3. `modules/system/users.nix`：使用者帳號定義
-
-`hosts/nixos/hardware-configuration.nix` 應使用 `nixos-generate-config` 為每台機器重新生成，不應手動複製。
+1. 複製 `variables.nix.example` → `variables.nix`，填入真實值
+2. 將 `variables.nix` 加入 `.gitignore`
+3. `hosts/nixos/hardware-configuration.nix` 使用 `nixos-generate-config` 為每台機器重新生成
