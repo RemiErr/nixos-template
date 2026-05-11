@@ -4,8 +4,24 @@
   programs.fish = {
     enable = true;
 
+    shellAliases = {
+      ll      = "ls -lahF --color=auto";
+      la      = "ls -A --color=auto";
+      grep    = "grep --color=auto";
+      cls     = "clear";
+      sos     = "source";
+      py      = "python3";
+      update  = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
+      flakeup = "nix flake update";
+      hm      = "home-manager switch --flake ~/nixos-config#user@nixos";
+      gc      = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
+      gens    = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+    };
+
     interactiveShellInit = ''
       set -g fish_greeting
+
+      fish_add_path $HOME/.local/bin
 
       fish_vi_key_bindings
 
@@ -35,6 +51,17 @@
     '';
 
     functions = {
+      fish_prompt = ''
+        set_color green
+        echo -n (whoami)@(hostname)
+        set_color normal
+        echo -n ':'
+        set_color blue
+        echo -n (prompt_pwd)
+        set_color normal
+        echo -n '$ '
+      '';
+
       fm = ''
         set -l tmp (mktemp -t "yazi-cwd.XXXXX")
         yazi $argv --cwd-file $tmp
@@ -44,12 +71,6 @@
         end
         rm -f $tmp
       '';
-    };
-
-    shellAliases = {
-      ll  = "ls -lahF --color=auto";
-      la  = "ls -A --color=auto";
-      cls = "clear";
     };
   };
 }
