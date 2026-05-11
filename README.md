@@ -1,39 +1,58 @@
-# NixOS 25.11 安裝教學
+# NixOS Template
 
-> **教學由 Claude 生成再編修**，本文是自用的參考範例。  
-> 
-```bash
-#【系統設定】  
-# 使用 Niri + Wayland
-# 不安裝 KDE/GNOME 等桌面環境
-username = user #（請替換為你的帳號名稱）
-hostname = nixos
-```
+這是一份採用了以下方案的 Flakes 模板。
+
+- 視窗管理器：[Niri](https://github.com/YaLTeR/niri)（磁磚式 Wayland WM）
+- 桌面 Shell：[Noctalia Shell](https://github.com/noctalia-dev/noctalia-shell)
+- 終端機：Foot + Fish shell
+- 輸入法：fcitx5 + 新注音（Chewing）
+- 字型：Maple Mono NF / JetBrainsMono Nerd Font
 
 ---
+
+## 使用須知
+
+本 repo 作為 Nix Flake input 被引用，**不需要 clone 本 repo**。
+
+請 clone 該專案：[nixos-config](https://github.com/RemiErr/nixos-config)
+
+```bash
+git clone https://github.com/RemiErr/nixos-config.git ~/.config
+```
+
+並使用 `~/.config` 目錄作為你的 overlay 起點，其中 `variables.nix` 用於存放系統參數，**請記得先填寫它**。
+
+---
+
+<br>
+<br>
+<br>
+
+# NixOS 25.11 安裝教學
 
 ## 安裝流程預覽
 
 ```
 [Live 環境]
     │
-    ├─ 1. 確認網路、clone repo
+    ├─ 1. 確認網路 → clone overlay
     │
-    ├─ 2. 磁碟分割（parted）→ 格式化 → 掛載至 /mnt
+    ├─ 2. 填寫 variables.nix（username、hostname、git email 等）
     │
-    ├─ 3. nixos-generate-config --root /mnt
-    │       └─ cp hardware-configuration.nix → /tmp/nixos-config/hosts/nixos/
+    ├─ 3. 磁碟分割 → 格式化 → 掛載至 /mnt
     │
-    ├─ 4. sudo nixos-install --flake /tmp/nixos-config#nixos --no-root-password
-    │       └─（等待 10~60 分鐘）
+    ├─ 4. nixos-generate-config --root /mnt
+    │       └─ cp hardware-configuration.nix → /tmp/my-nixos/
     │
-    ├─ 5. sudo nixos-enter --root /mnt → passwd user → exit
+    ├─ 5. sudo nixos-install --flake /tmp/my-nixos#<hostname>
     │
-    └─ 6. sudo reboot（拔除 USB）
-
-[首次開機]
-    └─ 登入 user → 執行驗證清單
+    ├─ 6. sudo nixos-enter → passwd <username> → exit
+    │
+    └─ 7. sudo reboot（拔除 USB）
 ```
+
+> [!NOTE]
+> **教學由 Claude 生成再編修**，本文是自用的備忘紀錄兼參考範例。  
 
 ---
 
@@ -107,26 +126,41 @@ nmcli device wifi list
 nmcli device wifi connect "SSID名稱" password "密碼"
 ```
 
-### 1.5 Clone repo 並確認設定
-
-Clone 後，將以下三個檔案中的 `user` 替換為你的實際帳號名稱、`Your Name` / `your@email.com` 替換為你的 Git 資訊：
-- `flake.nix`：`home-manager.users.user`、`"user@nixos"`
-- `home/default.nix`：`home.username`、`home.homeDirectory`、`userName`、`userEmail`
-- `modules/system/users.nix`：`users.users.user`
+### 1.5 Clone overlay 並設定 variables.nix
 
 ```bash
-# 在 Live 環境，以一般指令方式 clone（不需 sudo）
-git clone https://github.com/<你的帳號>/nixos-config.git /tmp/nixos-config
-
-# 確認主機設定存在
-ls /tmp/nixos-config/hosts/nixos/
-# 應看到 configuration.nix（hardware-configuration.nix 之後補入）
+git clone https://github.com/RemiErr/nixos-config /tmp/my-nixos
+cd /tmp/my-nixos
 ```
 
 若 Live 環境沒有 `git`：
 ```bash
-nix-shell -p git --run "git clone https://github.com/<你的帳號>/nixos-config.git /tmp/nixos-config"
+nix-shell -p git --run "git clone https://github.com/RemiErr/nixos-config /tmp/my-nixos"
+cd /tmp/my-nixos
 ```
+
+**填寫 `variables.nix`**：
+
+```bash
+nano variables.nix
+```
+
+```nix
+{
+  username        = "alice";              # 你的使用者名稱
+  hostname        = "my-machine";         # 主機名稱
+  homeDirectory   = "/home/alice";        # 家目錄
+  userDescription = "Alice";              # 顯示名稱
+
+  git = {
+    name  = "Alice";
+    email = "alice@example.com";
+  };
+}
+```
+
+> [!NOTE]
+> `hardware-configuration.nix` 在步驟 3 產生後補入，現在先跳過。
 
 ---
 
@@ -136,22 +170,16 @@ nix-shell -p git --run "git clone https://github.com/<你的帳號>/nixos-config
 
 NixOS 使用 UEFI 開機，需要以下三個分割區：
 
-| 分割區 | 格式  | 掛載點   | 作用                                        | 建議大小                             |
-| ------ | ----- | -------- | ------------------------------------------- | ------------------------------------ |
-| sda1   | FAT32 | `/boot`  | EFI System Partition，UEFI 韌體讀取開機程式 | 512 MB ~ 1 GB                        |
-| sda2   | swap  | `[swap]` | 虛擬記憶體，系統記憶體不足時使用            | 等於 RAM 大小（支援休眠）；最少 4 GB |
-| sda3   | ext4  | `/`      | 根目錄，系統本體與所有資料                  | 剩餘全部空間（建議 ≥ 30 GB）         |
-
-**為什麼需要 EFI 分割區？**  
-現代 UEFI 韌體只能直接讀取 FAT32 格式的分割區來**載入開機程式（systemd-boot）**。沒有這個分割區，系統無法開機。
-
-**為什麼需要 Swap？**  
-Linux 運作時可能消耗大量記憶體（如：NixOS 編譯套件），Swap 可以硬碟空間提供緩衝。  
-若需要休眠（Hibernate）功能，Swap 大小必須 ≥ 實體 RAM。
+| 分割區 | 格式  | 掛載點   | 作用                 | 建議大小                        |
+| ------ | ----- | -------- | -------------------- | ------------------------------- |
+| sda1   | FAT32 | `/boot`  | EFI System Partition | 512 MB ~ 1 GB                   |
+| sda2   | swap  | `[swap]` | 虛擬記憶體           | 等於 RAM（支援休眠）；最少 4 GB |
+| sda3   | ext4  | `/`      | 根目錄               | 剩餘全部（建議 ≥ 30 GB）        |
 
 ### 2.2 確認目標磁碟
 
-> ⚠️ **警告**：以下操作會清除磁碟上的所有資料，操作前請再三確認磁碟名稱。
+> [!CAUTION]
+> ⚠️ **警告**：之後的操作會清除磁碟上的 *所有資料*，操作前請再三確認磁碟名稱。
 
 ```bash
 lsblk
@@ -244,16 +272,16 @@ sudo nixos-generate-config --root /mnt
 - `hardware-configuration.nix`：機器專屬硬體設定（重要）
 - `configuration.nix`：預設系統設定（本教學不使用此檔案）
 
-**將硬體設定複製進 repo**（最關鍵步驟）：
+**將硬體設定複製進 overlay**：
 
 ```bash
 cp /mnt/etc/nixos/hardware-configuration.nix \
-   /tmp/nixos-config/hosts/nixos/hardware-configuration.nix
+   /tmp/my-nixos/hardware-configuration.nix
 ```
 
 確認內容正確（應包含你的磁碟 UUID）：
 ```bash
-cat /tmp/nixos-config/hosts/nixos/hardware-configuration.nix
+cat /tmp/my-nixos/hardware-configuration.nix
 # 查看是否有 fileSystems."/" 和 fileSystems."/boot"
 ```
 
@@ -262,31 +290,28 @@ cat /tmp/nixos-config/hosts/nixos/hardware-configuration.nix
 Nix flake 只讀取 git 追蹤的檔案。`hardware-configuration.nix` 已在 `.gitignore` 中排除（機器專屬、不應提交），因此需要手動 stage：
 
 ```bash
-cd /tmp/nixos-config
-git add -f hosts/nixos/hardware-configuration.nix
+cd /tmp/my-nixos
+git add -f hardware-configuration.nix
 ```
 
-不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。
+> [!IMPORTANT]  
+> 不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。  
 
+> [!CAUTION]
 > ⚠️ **注意**：`hardware-configuration.nix` 每台機器都不同，***絕對不可以*** 複製他人的檔案來使用！！
 
 ---
 
 ## 4. 系統建構與安裝
 
-### 4.1 Flakes 在 Live 環境的啟用方式
+### 4.1 啟用 Flakes（Live 環境）
 
-**系統安裝完成後**：Flakes 已由 `modules/system/common.nix` 自動啟用，無需任何額外操作。
-
-**在 Live 環境執行 `nixos-install` 之前**：NixOS 25.11 的 ISO 通常已支援 `nix` 指令與 Flakes。
-
-若執行時出現以下錯誤：
-
+NixOS 25.11 的 ISO 通常已支援 Flakes。若出現：
 ```
 error: experimental Nix feature 'flakes' is disabled
 ```
 
-執行以下指令啟用（僅對目前的 Live 環境工作階段有效）：
+執行：
 ```bash
 export NIX_CONFIG="experimental-features = nix-command flakes"
 ```
@@ -306,27 +331,15 @@ nix show-config | grep experimental-features
 **身分**：root（sudo）
 
 ```bash
+cd /tmp/my-nixos
 sudo nixos-install \
-  --flake /tmp/nixos-config#nixos \
+  --flake .#<hostname> \
   --no-root-password
 ```
 
-**指令格式說明**：
+將 `<hostname>` 替換為你在 `variables.nix` 中填入的 `hostname` 值。
 
-| 參數                   | 說明                                                                    |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `--flake <路徑>#<key>` | `#` 後的 `nixos` 對應 `flake.nix` 中 `nixosConfigurations.nixos` 的鍵名 |
-| `--no-root-password`   | 不設定 root 密碼（本設定使用 wheel 群組 + sudo 取代 root 登入）         |
-
-> 安裝過程中會下載並建構整個系統，時間視網路速度與硬體而定（約 10–60 分鐘）。
-
-出現以下訊息表示成功：
-
-```
-installation finished!
-```
-
-若出現 `nix: command not found`，請先執行 `nix-shell -p nix` 或確認 `/nix/store` 已掛載。
+安裝過程約需 10–60 分鐘（可能更久），出現 `installation finished!` 表示成功。
 
 ### 4.3 設定使用者密碼
 
@@ -340,7 +353,7 @@ installation finished!
 sudo nixos-enter --root /mnt
 
 # 設定使用者密碼
-passwd user
+passwd <username>
 # 輸入密碼（不會顯示字元），確認後再輸入一次
 
 # 離開 chroot 環境
@@ -359,55 +372,63 @@ sudo reboot
 
 重開機時拔除 USB 開機碟，確保從硬碟開機。
 
-### 5.2 首次開機流程
-
-1. **systemd-boot 選單**：出現開機選單，選第一個項目（最新世代）
-2. **登入提示**：
-   ```
-   nixos login: user
-   Password:
-   ```
-   輸入你設定的用戶密碼
-3. **預期畫面**：出現 Bash 提示符（純 CLI）
-
-```
-[user@nixos:~]$
-```
-
-> 本設定不含桌面環境。
-
-### 5.3 首次開機驗證清單
-
-逐一執行以下指令確認系統狀態：
+### 5.2 首次開機驗證
 
 ```bash
-# 確認 hostname
-hostnamectl
-# 應顯示：Static hostname: nixos
+hostnamectl          # 確認 hostname
 
-# 確認使用者
-whoami
-# 應顯示：user
+whoami               # 確認使用者
 
-# 確認 Flakes 可用
-nix --version
-# 應顯示：nix (Nix) 2.x.x
+nix --version        # 確認 Nix 可用
 
-# 確認 git
-git --version
-# 應顯示：git version 2.x.x
+git --version        # 確認 git
 
-# 確認網路
-ip addr
-# 應看到網路介面（eth0 或 enp... 或 wlan0）
+ip addr              # 確認網路介面
 
-# 確認 NetworkManager 服務
 sudo systemctl status NetworkManager
-# 應顯示 active (running)
 
-# 確認 sudo 可用
 sudo echo "sudo OK"
-# 應顯示：sudo OK
+```
+
+### 5.3 日常維護
+
+首次開機後，將 overlay 放到你慣用的位置（例如 `~/.config`）：
+
+```bash
+cp -r /tmp/my-nixos ~/.config
+cd ~/.config
+```
+
+**套用系統設定**：
+```bash
+update ~/.config # 等同 sudo nixos-rebuild switch --flake ~/.config#<hostname>
+```
+或
+```bash
+cd ~/.config
+update           # 等同 sudo nixos-rebuild switch --flake .#<hostname>
+```
+
+**套用 Home Manager 設定**：
+```bash
+hm ~/.config  # 等同 home-manager switch --flake ~/.config#<username>@<hostname>
+```
+或
+```bash
+cd ~/.config
+hm            # 等同 home-manager switch --flake .#<username>@<hostname>
+```
+
+**更新 template（拉取本 repo 的最新版本）**：
+```bash
+cd ~/.config
+nix flake update nixos-template
+update
+```
+
+**清理舊世代**：
+```bash
+gc
 ```
 
 ### 5.4 設定 SSH 金鑰（選用）
@@ -421,32 +442,4 @@ chmod 700 ~/.ssh
 # 將你的公鑰貼入
 echo "ssh-ed25519 AAAA... your@machine" >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
-```
-
-### 5.5 日常維護指令
-
-```bash
-# 套用系統設定變更
-sudo nixos-rebuild switch --flake ~/nixos-config#nixos
-# 或使用別名：
-update
-
-# 套用 Home Manager 設定變更
-home-manager switch --flake ~/nixos-config#user@nixos
-# 或使用別名：
-hm
-
-# 更新所有套件（更新 flake.lock）
-cd ~/nixos-config && nix flake update
-sudo nixos-rebuild switch --flake .#nixos
-
-# 清理舊世代
-sudo nix-collect-garbage -d
-# 或使用別名：
-gc
-
-# 查詢現有世代
-sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-# 或使用別名：
-gens
 ```
