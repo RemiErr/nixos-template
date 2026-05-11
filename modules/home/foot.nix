@@ -59,10 +59,6 @@
       scrollback = {
         lines = 10000;
       };
-
-      mouse = {
-        hide-when-typing = "yes";
-      };
     };
   };
 }
