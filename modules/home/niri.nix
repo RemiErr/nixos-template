@@ -108,8 +108,7 @@
     }
 
     // ── 啟動時執行 ──────────────────────────────────────────────
-    // waybar / mako / swww / fcitx5 由 systemd user service 管理，
-    // 此處只啟動沒有 systemd 服務的程式
+    spawn-at-startup "fcitx5" "-d" "--replace"
     spawn-at-startup "noctalia-shell"
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store &"

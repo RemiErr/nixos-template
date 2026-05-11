@@ -10,6 +10,7 @@
   #   4. 注入必要環境變數
   #
   i18n.inputMethod = {
+    enable = true;
     type = "fcitx5";                     # NixOS 25.05+ 語法（enabled 為舊語法）
     fcitx5 = {
       waylandFrontend = true;            # 使用 Wayland text-input-v3 原生協定
