@@ -82,6 +82,8 @@
   # ── Fish Shell 系統層級支援 ──────────────────────────────────────
   programs.fish.enable = true;
   environment.pathsToLink = [ "/share/fish" ];
+  # fish 安裝時會產生 man cache，停用以加速 build
+  documentation.man.generateCaches = false;
 
   # ── SSH 服務 ─────────────────────────────────────────────────────
   services.openssh = {
