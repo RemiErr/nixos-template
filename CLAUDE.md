@@ -19,7 +19,7 @@ nix-collect-garbage -d
 
 這是一個基於 **NixOS Flakes** 的模組化設定，使用 **Niri**（磁磚式 Wayland 視窗管理器）並支援繁體中文輸入（fcitx5 + 注音）。
 
-設計為**可被外部 flake 引用的模板**：使用者不需 clone 本 repo，透過 `inputs.nixos-template.url = "github:RemiErr/nixos-config"` 引用後，只需維護自己的 `variables.nix` 即可。
+設計為**可被外部 flake 引用的模板**：使用者不需 clone 本 repo，透過 `inputs.nixos-template.url = "github:RemiErr/nixos-template"` 引用後，只需維護自己的 `variables.nix` 即可。
 
 ### 目錄結構
 
@@ -27,9 +27,8 @@ nix-collect-garbage -d
 flake.nix              # 入口：exports nixosModules.default / homeModules.default
 variables.nix          # 個人值（gitignored，從 variables.nix.example 複製）
 variables.nix.example  # 範本，committed，含所有需填入的 placeholder
-.config/               # 使用者 overlay 範例結構（可直接 clone 使用）
-  flake.nix            # 引用本 repo 作為 template 的完整範例
-  variables.nix        # placeholder 值（committed 作為示範）
+.config/               # nixos-config repo 的本地草稿（不 commit 進本 repo）
+                       # 內容對應 github:RemiErr/nixos-config（使用者的 overlay 起點）
 hosts/nixos/           # 主機層設定（hostname 由 vars 注入）
 modules/system/        # NixOS 系統模組
   common.nix           # Nix 設定、時區(Asia/Taipei)、locale、基礎套件
