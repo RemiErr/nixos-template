@@ -83,27 +83,27 @@
 
         focus-ring {
             width 2
-            active-color   "#89b4fa"  // Catppuccin Blue
-            inactive-color "#313244"
+            active-color   "rgba(20,19,17,0.35)"
+            inactive-color "rgba(20,19,17,0.85)"
         }
 
         border {
-            off
+            on
         }
 
-        shadow {
-            on
-            softness 20
-            spread 2
-            offset x=-4 y=-4
-            color "rgba(0, 0, 0, 0.7)"
-        }
+        //shadow {
+        //    on
+        //    softness 20
+        //    spread 2
+        //    offset x=-4 y=-4
+        //    color "rgba(0, 0, 0, 0.7)"
+        //}
 
         struts {
-            left   0
-            right  0
-            top    0
-            bottom 0
+            left   6
+            right  6
+            top    8
+            bottom 10
         }
     }
 
