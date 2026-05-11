@@ -4,7 +4,8 @@
   imports = [
     inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
     ../modules/home/niri.nix        # 視窗管理器與鍵位設定
-    ../modules/home/kitty.nix       # 終端機
+    # ../modules/home/kitty.nix       # 終端機（暫停，改用 ghostty）
+    ../modules/home/ghostty.nix    # 終端機
     ../modules/home/fuzzel.nix      # 應用程式啟動器
     ../modules/home/hyprlock.nix    # 鎖屏
     ../modules/home/fastfetch.nix   # 系統資訊
@@ -149,7 +150,7 @@
     enable = true;
     settings = {
       appLauncher = {
-        terminalCommand = "kitty -e";  # 預設 xterm -e 未安裝，改為 kitty
+        terminalCommand = "ghostty -e";
       };
       bar = {
         position = "top";
