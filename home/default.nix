@@ -100,6 +100,8 @@
       py      = "python3";
       # NixOS 系統更新（改為你的 hostname）
       update  = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
+      # Flake 更新
+      flakeup = "nix flake update";
       # Home Manager 更新
       hm      = "home-manager switch --flake ~/nixos-config#user@nixos"; # CHANGE: replace "user" with your username, "nixos" with your hostname
       # Nix 清理
