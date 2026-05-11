@@ -5,7 +5,9 @@
     inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
     ../modules/home/niri.nix        # 視窗管理器與鍵位設定
     # ../modules/home/kitty.nix       # 終端機（暫停，改用 ghostty）
+    ../modules/home/fish.nix       # Shell
     ../modules/home/ghostty.nix    # 終端機
+    ../modules/home/foot.nix       # 備用終端機
     ../modules/home/fuzzel.nix      # 應用程式啟動器
     ../modules/home/hyprlock.nix    # 鎖屏
     ../modules/home/fastfetch.nix   # 系統資訊
@@ -206,6 +208,24 @@
         clockFormat = "hh\\nmm";
         clockStyle = "custom";
         radiusRatio = 1;
+      };
+      sessionMenu = {
+        countdownDuration  = 10000;
+        enableCountdown    = true;
+        largeButtonsLayout = "grid";
+        largeButtonsStyle  = true;
+        position           = "center";
+        showHeader         = true;
+        showKeybinds       = true;
+        powerOptions = [
+          { action = "lock";         command = ""; countdownEnabled = true; enabled = true; keybind = "1"; }
+          { action = "suspend";      command = ""; countdownEnabled = true; enabled = true; keybind = "2"; }
+          { action = "hibernate";    command = ""; countdownEnabled = true; enabled = true; keybind = "3"; }
+          { action = "reboot";       command = ""; countdownEnabled = true; enabled = true; keybind = "4"; }
+          { action = "logout";       command = ""; countdownEnabled = true; enabled = true; keybind = "5"; }
+          { action = "shutdown";     command = ""; countdownEnabled = true; enabled = true; keybind = "6"; }
+          { action = "rebootToUefi"; command = ""; countdownEnabled = true; enabled = true; keybind = "";  }
+        ];
       };
     };
   };
