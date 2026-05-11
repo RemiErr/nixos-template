@@ -79,7 +79,9 @@
             proportion 1.0
         }
 
-        default-column-width { proportion 0.5; }
+        default-column-width {
+            proportion 0.5
+        }
 
         focus-ring {
             width 2
@@ -91,13 +93,13 @@
             off
         }
 
-        //shadow {
-        //    on
-        //    softness 20
-        //    spread 2
-        //    offset x=-4 y=-4
-        //    color "rgba(0, 0, 0, 0.7)"
-        //}
+        shadow {
+            on
+            softness 20
+            spread 2
+            offset x=-4 y=-4
+            color "rgba(0, 0, 0, 0.7)"
+        }
 
         struts {
             left   6

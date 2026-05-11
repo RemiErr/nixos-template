@@ -3,13 +3,16 @@
 {
   programs.foot = {
     enable = pkgs.stdenv.isLinux;
+    enableFishIntegration=true;
     server.enable = true;
+    
     settings = {
       main = {
         term             = "foot";
         font             = "Maple Mono NF:size=13";
         dpi-aware        = "no";
         resize-keep-grid = "no";
+        pad              = "6x10"; # 水平x垂直
       };
 
       cursor = {
