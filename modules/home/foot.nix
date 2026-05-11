@@ -11,17 +11,23 @@
         font             = "Maple Mono NF:size=13";
         dpi-aware        = "no";
         resize-keep-grid = "no";
-        pad              = "6x10"; # 水平x垂直
+        pad              = "10x10"; # 水平x垂直
       };
 
       cursor = {
         style = "block";
-        color = "141311 FFB4AB";  # text-on-cursor  cursor-bg
+        blink = "no";
+        beam-thickness = "1.5";
+      };
+
+      mouse = {
+        hide-when-typing = "yes";
+        alternate-scroll-mode = "yes";
       };
 
       colors = {
-        alpha  = "0.72";
-        blur   = true;
+        alpha  = "0.85";
+        cursor = "141311 FFB4AB";  # text-on-cursor  cursor-bg
 
         background           = "141311";
         foreground           = "CFC6A9";
