@@ -157,8 +157,7 @@
 
     binds {
         // ── 應用程式 ─────────────────────────────────────────
-        Mod+Return       { spawn "ghostty"; }
-        Mod+Shift+Return { spawn "foot"; }
+        Mod+Return { spawn "foot"; }
         Mod+D           { spawn "fuzzel"; }
         Mod+Ctrl+L      { spawn "hyprlock"; }
         Mod+Shift+E     { spawn "wlogout"; }
