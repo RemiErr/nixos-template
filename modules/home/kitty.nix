@@ -74,7 +74,7 @@
       tab_title_template      = "{index}: {title}";
 
       # ── 中文輸入法相容 ────────────────────────────────────────
-      # wayland_enable_ime = "yes"  # 若注音無法輸入，取消此注解
+      wayland_enable_ime = "yes";
     };
 
     keybindings = {
