@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
 
 {
   programs.fish = {
@@ -11,9 +11,7 @@
       cls     = "clear";
       sos     = "source";
       py      = "python3";
-      update  = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
       flakeup = "nix flake update";
-      hm      = "home-manager switch --flake ~/nixos-config#user@nixos";
       gc      = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       gens    = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
     };
@@ -51,6 +49,22 @@
     '';
 
     functions = {
+      update = ''
+        set -l flake_path $argv[1]
+        if test -z "$flake_path"
+          set flake_path .
+        end
+        sudo nixos-rebuild switch --flake $flake_path#${vars.hostname}
+      '';
+
+      hm = ''
+        set -l flake_path $argv[1]
+        if test -z "$flake_path"
+          set flake_path .
+        end
+        home-manager switch --flake $flake_path#${vars.username}@${vars.hostname}
+      '';
+
       fish_prompt = ''
         set_color green
         echo -n (whoami)@(hostname)

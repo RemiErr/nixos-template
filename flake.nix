@@ -18,28 +18,36 @@
     let
       system = "x86_64-linux";
       pkgs   = nixpkgs.legacyPackages.${system};
+      vars   = import ./variables.nix;
     in
     {
+      # ── Template Module Export（供外部 flake 引用）──────────────────
+      # 外部 flake 透過 specialArgs / extraSpecialArgs 傳入 vars 與 inputs
+      nixosModules.default = { ... }: {
+        imports = [
+          ./modules/system/common.nix
+          ./modules/system/wayland.nix
+          ./modules/system/input-method.nix
+          ./modules/system/users.nix
+        ];
+      };
+
+      homeModules.default = import ./home/default.nix;
+
       # ── NixOS 主機設定 ──────────────────────────────────────────────
-      # 新增主機：複製 nixos 區塊，改 key 與 hosts/ 路徑即可
       nixosConfigurations = {
 
-        # ── 主要主機：nixos（Niri + Wayland）────────────────────────
-        nixos = nixpkgs.lib.nixosSystem {
+        ${vars.hostname} = nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs vars; };
           modules = [
             ./hosts/nixos/configuration.nix
             home-manager.nixosModules.home-manager
             {
-              # niri 從 unstable 取得以支援 background_blur
-              # programs.niri.package = inputs.nixpkgs-unstable.legacyPackages.${system}.niri;
-            }
-            {
               home-manager.useGlobalPkgs      = true;
               home-manager.useUserPackages    = true;
-              home-manager.extraSpecialArgs   = { inherit inputs; };
-              home-manager.users.user         = import ./home/default.nix; # CHANGE: replace "user" with your username (must match users.nix and home/default.nix)
+              home-manager.extraSpecialArgs   = { inherit inputs vars; };
+              home-manager.users.${vars.username} = import ./home/default.nix;
               home-manager.backupFileExtension = "bak";
             }
           ];
@@ -49,9 +57,9 @@
 
       # ── 獨立 Home Manager（非 NixOS 系統使用）──────────────────────
       homeConfigurations = {
-        "user@nixos" = home-manager.lib.homeManagerConfiguration { # CHANGE: replace "user" with your username, "nixos" is your hostname
+        "${vars.username}@${vars.hostname}" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { inherit inputs; };
+          extraSpecialArgs = { inherit inputs vars; };
           modules = [ ./home/default.nix ];
         };
       };

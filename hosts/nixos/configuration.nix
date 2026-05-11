@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, vars, ... }:
 
 {
   imports = [
@@ -9,8 +9,7 @@
     ../../modules/system/users.nix        # 使用者帳號
   ];
 
-  # 主機名稱
-  networking.hostName = "nixos";
+  networking.hostName = vars.hostname;
 
   # 允許安裝 unfree 套件（如 NVIDIA 驅動等）
   nixpkgs.config.allowUnfree = true;

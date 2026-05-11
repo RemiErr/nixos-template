@@ -1,11 +1,10 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, vars, ... }:
 
 {
   # ── 使用者帳號 ───────────────────────────────────────────────────
-  # CHANGE: replace every "user" with your username (must match flake.nix and home/default.nix)
-  users.users.user = {          # CHANGE: replace "user" with your username
+  users.users.${vars.username} = {
     isNormalUser = true;
-    description  = "User";      # CHANGE: replace "User" with your display name
+    description  = vars.userDescription;
     extraGroups  = [
       "wheel"           # sudo 權限
       "networkmanager"  # 網路設定
@@ -16,8 +15,6 @@
       "vboxsf"          # VirtualBox 共享資料夾
     ];
     shell = pkgs.fish;
-    # 密碼在首次登入後設定：sudo passwd user
-    # 或在安裝時設定：nixos-install 完成後執行 passwd user
   };
 
   # ── 禁止 root 登入（安全）───────────────────────────────────────

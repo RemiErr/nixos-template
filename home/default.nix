@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, ... }:
+{ config, pkgs, inputs, lib, vars, ... }:
 
 {
   imports = [
@@ -15,11 +15,9 @@
     # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia-shell SessionMenu）
   ];
 
-  # ── 使用者資訊（必須與 NixOS users.users 一致）───────────────────
-  # CHANGE: update both lines below and home-manager.users.<name> in flake.nix
-  home.username      = "user";        # CHANGE: replace with your username
-  home.homeDirectory = "/home/user";  # CHANGE: replace "user" with your username
-
+  # ── 使用者資訊 ───────────────────────────────────────────────────
+  home.username      = vars.username;
+  home.homeDirectory = vars.homeDirectory;
 
   # ── 共用工具套件 ─────────────────────────────────────────────────
   home.packages = with pkgs; [
@@ -83,52 +81,18 @@
     };
   };
 
-  # ── Bash 設定 ────────────────────────────────────────────────────
-  programs.bash = {
-    enable      = true;
-    historySize = 10000;
-    historyFileSize = 50000;
-    historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
-    shellAliases = {
-      ll      = "ls -lahF --color=auto";
-      la      = "ls -A --color=auto";
-      grep    = "grep --color=auto";
-      cls     = "clear";
-      sos     = "source";
-      py      = "python3";
-      # NixOS 系統更新（改為你的 hostname）
-      update  = "sudo nixos-rebuild switch --flake ~/nixos-config#nixos";
-      # Flake 更新
-      flakeup = "nix flake update";
-      # Home Manager 更新
-      hm      = "home-manager switch --flake ~/nixos-config#user@nixos"; # CHANGE: replace "user" with your username, "nixos" with your hostname
-      # Nix 清理
-      gc      = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
-      # 查詢目前世代
-      gens    = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
-    };
-    initExtra = ''
-      # 彩色提示列
-      PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ '
-
-      # 確保 ~/.local/bin 在 PATH 中
-      export PATH="$HOME/.local/bin:$PATH"
-    '';
-  };
-
   # ── Git 設定 ─────────────────────────────────────────────────────
   programs.git = {
     enable = true;
     settings = {
-      user.name  = "Your Name";        # CHANGE: your Git display name
-      user.email = "your@email.com";   # CHANGE: your Git email address
+      user.name  = vars.git.name;
+      user.email = vars.git.email;
       init.defaultBranch = "main";
       pull.rebase        = false;
       core.editor        = "nvim";
       diff.tool          = "vimdiff";
 
       alias = {
-        # common aliases
         st = "status";
         br = "branch";
         co = "checkout";
