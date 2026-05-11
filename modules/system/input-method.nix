@@ -18,8 +18,8 @@
       addons = with pkgs; [
         fcitx5-chewing                   # 新注音輸入法（libchewing）
         fcitx5-gtk                       # GTK 整合模組
-        fcitx5-qt                        # Qt 整合模組
-        fcitx5-configtool                # 圖形化設定工具
+        qt6Packages.fcitx5-qt            # Qt6 整合模組
+        qt6Packages.fcitx5-configtool    # 圖形化設定工具
         fcitx5-material-color            # Material Design 主題
       ];
     };
