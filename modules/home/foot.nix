@@ -3,9 +3,9 @@
 {
   programs.foot = {
     enable = pkgs.stdenv.isLinux;
-    enableFishIntegration=true;
+    enableFishIntegration = true;
     server.enable = true;
-    
+
     settings = {
       main = {
         term             = "foot";
