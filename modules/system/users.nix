@@ -15,7 +15,7 @@
       "seat"            # seatd（部分 Wayland 環境需要）
       "vboxsf"          # VirtualBox 共享資料夾
     ];
-    shell = pkgs.bash;
+    shell = pkgs.fish;
     # 密碼在首次登入後設定：sudo passwd user
     # 或在安裝時設定：nixos-install 完成後執行 passwd user
   };

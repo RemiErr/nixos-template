@@ -79,6 +79,10 @@
     linux-manual
   ];
 
+  # ── Fish Shell 系統層級支援 ──────────────────────────────────────
+  programs.fish.enable = true;
+  environment.pathsToLink = [ "/share/fish" ];
+
   # ── SSH 服務 ─────────────────────────────────────────────────────
   services.openssh = {
     enable   = true;
