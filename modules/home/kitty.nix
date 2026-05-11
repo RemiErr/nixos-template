@@ -11,8 +11,8 @@
 
     settings = {
       # ── 視窗外觀 ──────────────────────────────────────────────
-      background_opacity   = "0.82";
-      background_blur      = 20;       # 需要 niri ≥ v26.04
+      background_opacity   = "0.72";
+      background_blur      = 30;
       window_padding_width = "0";
       confirm_os_window_close = "0";
       hide_window_decorations = "yes";   # 由 niri 管理裝飾
@@ -74,7 +74,7 @@
       tab_title_template      = "{index}: {title}";
 
       # ── 中文輸入法相容 ────────────────────────────────────────
-      wayland_enable_ime = "yes";
+      # wayland_enable_ime = "yes";
     };
 
     keybindings = {
