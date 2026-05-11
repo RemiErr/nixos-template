@@ -27,17 +27,13 @@
 
   # ── 輸入法環境變數 ───────────────────────────────────────────────
   #
-  # 注意：啟用 waylandFrontend 後，現代 GTK4/Qt6 程式可透過 Wayland
-  #       原生協定自動使用 fcitx5，不需要 IM_MODULE 變數。
-  #       但為了相容舊版 GTK3/Qt5 及非 Wayland 程式，仍需設定。
+  # waylandFrontend = true 時：
+  #   GTK4 / Qt6 透過 Wayland text-input-v3 協定自動使用 fcitx5
+  #   XMODIFIERS 供 xwayland-satellite 轉發的 X11 使用
   #
   environment.sessionVariables = {
-    GTK_IM_MODULE  = "fcitx";
-    QT_IM_MODULE   = "fcitx";
     XMODIFIERS     = "@im=fcitx";
     SDL_IM_MODULE  = "fcitx";
-    # GLFW_IM_MODULE 用於部分遊戲引擎（可選）
-    GLFW_IM_MODULE = "ibus";
   };
 
   # ── 首次設定提示 ─────────────────────────────────────────────────
