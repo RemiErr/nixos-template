@@ -59,6 +59,7 @@
       scrollback_pager_history_size = "0";
 
       # ── 效能 ──────────────────────────────────────────────────
+      linux_display_server    = "wayland";
       sync_to_monitor         = "yes";
       repaint_delay           = "10";
       input_delay             = "3";
