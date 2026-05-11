@@ -88,7 +88,7 @@
         }
 
         border {
-            on
+            off
         }
 
         //shadow {
