@@ -3,7 +3,6 @@
 {
   programs.foot = {
     enable = pkgs.stdenv.isLinux;
-    enableFishIntegration = true;
     server.enable = true;
 
     settings = {

@@ -79,6 +79,14 @@
     linux-manual
   ];
 
+  # ── Foot 終端機 ──────────────────────────────────────────────────
+  programs = {
+    foot = {
+      enableFishIntegration = true;
+      theme = "tokyonight-night";
+    }
+  }
+
   # ── Fish Shell 系統層級支援 ──────────────────────────────────────
   programs.fish.enable = true;
   environment.pathsToLink = [ "/share/fish" ];
