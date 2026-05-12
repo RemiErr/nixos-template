@@ -19,6 +19,11 @@
   home.username      = vars.username;
   home.homeDirectory = vars.homeDirectory;
 
+  # ── 環境變數 ─────────────────────────────────────────────────────
+  home.sessionVariables = {
+    EDITOR = vars.editor;
+  };
+
   # ── 共用工具套件 ─────────────────────────────────────────────────
   home.packages = with pkgs; [
     # Wayland 截圖工具組
