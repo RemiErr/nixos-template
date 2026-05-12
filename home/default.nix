@@ -6,13 +6,13 @@
     ../modules/home/niri.nix        # 視窗管理器與鍵位設定
     ../modules/home/fish.nix       # Shell
     ../modules/home/foot.nix       # 終端機
-    ../modules/home/fuzzel.nix      # 應用程式啟動器
     ../modules/home/hyprlock.nix    # 鎖屏
     ../modules/home/fastfetch.nix   # 系統資訊
     # ../modules/home/waybar.nix    # 狀態列（改用 noctalia-shell Bar）
     # ../modules/home/mako.nix      # 通知（改用 noctalia-shell Notification）
     # ../modules/home/swww.nix      # 桌布管理（改用 noctalia-shell Background）
     # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia-shell SessionMenu）
+    # ../modules/home/fuzzel.nix    # 應用程式啟動器（改用 noctalia AppLauncher）
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
@@ -28,7 +28,8 @@
 
     # 剪貼簿
     wl-clipboard  # wl-copy / wl-paste
-    cliphist      # 剪貼簿歷史（配合 fuzzel 使用）
+    cliphist      # 剪貼簿歷史（配合 fuzzel dmenu 使用）
+    fuzzel        # cliphist Mod+V dmenu backend
 
     # 通知 CLI
     libnotify     # notify-send

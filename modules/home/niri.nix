@@ -111,7 +111,7 @@
 
     // ── 啟動時執行 ──────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d" "--replace"
-    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none noctalia-shell"
+    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none qs -c noctalia-shell"
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store &"
 
@@ -153,16 +153,21 @@
         open-floating true
     }
 
+    // ── noctalia 桌布層（使桌布正確顯示）─────────────────────────
+    layer-rule {
+        match namespace="^noctalia-wallpaper.*"
+        place-within-backdrop true
+    }
+
     // ── 按鍵綁定 ────────────────────────────────────────────────
     // Mod = Super/Windows 鍵
     // 查看所有可用 action：niri msg action list
 
     binds {
         // ── 應用程式 ─────────────────────────────────────────
-        Mod+Return { spawn "foot"; }
-        Mod+D           { spawn "fuzzel"; }
-        Mod+Ctrl+L      { spawn "hyprlock"; }
-        Mod+Shift+E     { spawn "wlogout"; }
+        Mod+Return  { spawn "foot"; }
+        Mod+D       { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+        Mod+Ctrl+L  { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
 
         // 截圖（grim + slurp）
         Print           { screenshot; }
@@ -242,12 +247,12 @@
         Mod+Ctrl+Up     { move-column-to-workspace-up; }
 
         // ── 系統媒體 / 音量 / 亮度 ───────────────────────────
-        XF86AudioRaiseVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-        XF86AudioLowerVolume  allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-        XF86AudioMute         allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
+        XF86AudioMute         allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
         XF86AudioMicMute      { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-        XF86MonBrightnessUp   { spawn "brightnessctl" "set" "10%+"; }
-        XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+        XF86MonBrightnessUp   { spawn-sh "qs -c noctalia-shell ipc call brightness increase"; }
+        XF86MonBrightnessDown { spawn-sh "qs -c noctalia-shell ipc call brightness decrease"; }
         XF86AudioPlay         { spawn "playerctl" "play-pause"; }
         XF86AudioNext         { spawn "playerctl" "next"; }
         XF86AudioPrev         { spawn "playerctl" "previous"; }
