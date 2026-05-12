@@ -111,9 +111,8 @@
 
     // ── 啟動時執行 ──────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d" "--replace"
-    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none qs -c noctalia-shell"
+    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none noctalia-shell"
     spawn-at-startup "xwayland-satellite"
-    spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store &"
 
     prefer-no-csd
 
@@ -166,8 +165,10 @@
     binds {
         // ── 應用程式 ─────────────────────────────────────────
         Mod+Return  { spawn "foot"; }
-        Mod+D       { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-        Mod+Ctrl+L  { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+        Mod+D       { spawn-sh "noctalia-shell ipc call launcher toggle"; }
+        Mod+Ctrl+L  { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
+        Mod+Shift+E { spawn-sh "noctalia-shell ipc call sessionMenu toggle"; }
+        Mod+Period  { spawn-sh "noctalia-shell ipc call launcher emoji"; }
 
         // 截圖（grim + slurp）
         Print           { screenshot; }
@@ -175,8 +176,8 @@
         Alt+Print       { screenshot-window; }
         Mod+Shift+S     { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
 
-        // 剪貼簿歷史
-        Mod+V           { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+        // 剪貼簿歷史（noctalia 內建）
+        Mod+V { spawn-sh "noctalia-shell ipc call launcher clipboard"; }
 
         // ── 視窗焦點（vim 鍵 + 方向鍵）──────────────────────
         Mod+H           { focus-column-left; }
@@ -247,15 +248,15 @@
         Mod+Ctrl+Up     { move-column-to-workspace-up; }
 
         // ── 系統媒體 / 音量 / 亮度 ───────────────────────────
-        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
-        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
-        XF86AudioMute         allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume increase"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume decrease"; }
+        XF86AudioMute         allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume muteOutput"; }
         XF86AudioMicMute      { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-        XF86MonBrightnessUp   { spawn-sh "qs -c noctalia-shell ipc call brightness increase"; }
-        XF86MonBrightnessDown { spawn-sh "qs -c noctalia-shell ipc call brightness decrease"; }
-        XF86AudioPlay         { spawn "playerctl" "play-pause"; }
-        XF86AudioNext         { spawn "playerctl" "next"; }
-        XF86AudioPrev         { spawn "playerctl" "previous"; }
+        XF86MonBrightnessUp   { spawn-sh "noctalia-shell ipc call brightness increase"; }
+        XF86MonBrightnessDown { spawn-sh "noctalia-shell ipc call brightness decrease"; }
+        XF86AudioPlay         { spawn-sh "noctalia-shell ipc call media playPause"; }
+        XF86AudioNext         { spawn-sh "noctalia-shell ipc call media next"; }
+        XF86AudioPrev         { spawn-sh "noctalia-shell ipc call media previous"; }
 
         // ── niri 說明 ────────────────────────────────────────
         Mod+Shift+Slash { show-hotkey-overlay; }

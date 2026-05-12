@@ -28,8 +28,6 @@
 
     # 剪貼簿
     wl-clipboard  # wl-copy / wl-paste
-    cliphist      # 剪貼簿歷史（配合 fuzzel dmenu 使用）
-    fuzzel        # cliphist Mod+V dmenu backend
 
     # 通知 CLI
     libnotify     # notify-send
