@@ -152,12 +152,6 @@
         open-floating true
     }
 
-    // ── noctalia 桌布層（使桌布正確顯示）─────────────────────────
-    layer-rule {
-        match namespace="^noctalia-wallpaper.*"
-        place-within-backdrop true
-    }
-
     // ── 按鍵綁定 ────────────────────────────────────────────────
     // Mod = Super/Windows 鍵
     // 查看所有可用 action：niri msg action list
