@@ -58,9 +58,6 @@
     bash
   '';
 
-  # ── 亮度控制 ────────────────────────────────────────────────────
-  programs.light.enable = true;
-
   # ── Wayland 全域環境變數 ─────────────────────────────────────────
   # sessionVariables 在使用者登入時注入，影響所有圖形程式
   environment.sessionVariables = {
