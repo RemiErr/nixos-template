@@ -28,7 +28,7 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config
 <br>
 <br>
 
-# NixOS 25.11 安裝教學
+# NixOS 26.05 安裝教學
 
 ## 安裝流程預覽
 
@@ -84,8 +84,8 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config
 
 前往 NixOS 官方下載頁面：`https://nixos.org/download/`
 
-- **Graphical ISO**：選 "NixOS 25.11 → Graphical ISO image"
-- **Minimal ISO**：選 "NixOS 25.11 → Minimal ISO image"
+- **Graphical ISO**：選 "NixOS 26.05 → Graphical ISO image"
+- **Minimal ISO**：選 "NixOS 26.05 → Minimal ISO image"
 
 ### 1.2 製作開機 USB
 
@@ -95,7 +95,7 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config
 lsblk
 
 # 寫入映像（將 /dev/sdX 替換為你的 USB 裝置）
-sudo dd if=nixos-25.11-*.iso of=/dev/sdX bs=4M status=progress oflag=sync
+sudo dd if=nixos-26.05-*.iso of=/dev/sdX bs=4M status=progress oflag=sync
 ```
 
 **Windows**：使用 [Rufus](https://rufus.ie/) 或 [balenaEtcher](https://etcher.balena.io/)，選擇 DD 模式寫入。
@@ -306,7 +306,7 @@ git add -f hardware-configuration.nix
 
 ### 4.1 啟用 Flakes（Live 環境）
 
-NixOS 25.11 的 ISO 通常已支援 Flakes。若出現：
+NixOS 26.05 的 ISO 通常已支援 Flakes。若出現：
 ```
 error: experimental Nix feature 'flakes' is disabled
 ```
