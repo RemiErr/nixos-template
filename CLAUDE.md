@@ -66,8 +66,9 @@ home/default.nix       # Home Manager 入口，彙整所有 home 模組
 
 ### Flake 設計
 
-- **nixpkgs**：`nixos-25.11`
-- **home-manager**：`release-25.11`
+- **nixpkgs**：`nixos-26.05`
+- **home-manager**：`release-26.05`
+- **noctalia-shell**：釘選在 `v4.7.3`（repo 已改名 `noctalia-dev/noctalia` 且主線進入 v5 beta，設定 schema 與指令名稱不相容，故暫不跟隨 main）
 - **module exports**：`nixosModules.default`（系統模組）、`homeModules.default`（home 模組）
 - `vars` 從 `variables.nix` import，透過 `specialArgs` / `extraSpecialArgs` 傳入所有模組
 
