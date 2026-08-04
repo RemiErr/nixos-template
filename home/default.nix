@@ -202,5 +202,5 @@
   programs.home-manager.enable = true;
 
   # !! 必須與 system.stateVersion 一致 !!
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
 }

@@ -21,5 +21,5 @@
   };
 
   # !! 必須與 home.stateVersion 一致，初次設定後不可修改 !!
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
