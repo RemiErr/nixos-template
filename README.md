@@ -409,7 +409,7 @@ cd ~/.config
 update           # 等同 sudo nixos-rebuild switch --flake .#<hostname>
 ```
 > [!IMPORTANT]
-> 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，並於修改後進行測試。  
+> 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，將 Template 指向新的位置，並於修改後進行測試。  
 > `update ~/.config --override-input nixos-template path:~/<YOUR-LOCAL-PATH>/nixos-template`
 
 **套用 Home Manager 設定**：
