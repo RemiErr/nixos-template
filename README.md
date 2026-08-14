@@ -408,7 +408,7 @@ update ~/.config # 等同 sudo nixos-rebuild switch --flake ~/.config#<hostname>
 cd ~/.config
 update           # 等同 sudo nixos-rebuild switch --flake .#<hostname>
 ```
-> [!IMPORTANT] 參數覆蓋與測試
+> [!IMPORTANT] 參數覆蓋與測試  
 > 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，並於修改後進行測試。  
 > `update ~/.config --override-input nixos-template path:~/<YOUR-LOCAL-PATH>/nixos-template`
 
