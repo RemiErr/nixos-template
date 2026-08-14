@@ -54,7 +54,7 @@
         if test -z "$flake_path"
           set flake_path .
         end
-        sudo nixos-rebuild switch --flake $flake_path#${vars.hostname}
+        sudo nixos-rebuild switch --flake $flake_path#${vars.hostname} $argv[2..]
       '';
 
       hm = ''
@@ -62,7 +62,7 @@
         if test -z "$flake_path"
           set flake_path .
         end
-        home-manager switch --flake $flake_path#${vars.username}@${vars.hostname}
+        home-manager switch --flake $flake_path#${vars.username}@${vars.hostname} $argv[2..]
       '';
 
       fish_prompt = ''
