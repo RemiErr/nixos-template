@@ -10,10 +10,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # noctalia-shell repo 已改名為 noctalia-dev/noctalia，主線已進入 v5 beta
-    # 此處釘選在改名前的最後一個 v4 穩定 tag，避免被 beta 破壞性變更影響。
-    # 日後要升級 v5 需另外重寫 home/default.nix 的 noctalia 設定區塊與 niri.nix 的 IPC 指令。
-    noctalia-shell.url = "github:noctalia-dev/noctalia/v4.7.3";
+    # noctalia-shell 已改名為 noctalia-dev/noctalia，v5 為 Qt/QML → 原生 C++/OpenGL 的
+    # 全面重寫：binary 由 noctalia-shell 改名 noctalia、設定檔由 JSON 改為 TOML、
+    # IPC 指令由 `noctalia-shell ipc call ...` 改為 `noctalia msg ...`。
+    
+    noctalia = {
+      url = "github:noctalia-dev/noctalia/v5.0.0-beta.8";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:

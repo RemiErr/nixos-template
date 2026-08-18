@@ -2,17 +2,17 @@
 
 {
   imports = [
-    inputs.noctalia-shell.homeModules.default  # Noctalia Shell（桌面 shell）
+    inputs.noctalia.homeModules.default  # Noctalia（桌面 shell，v5）
     ../modules/home/niri.nix        # 視窗管理器與鍵位設定
     ../modules/home/fish.nix       # Shell
     ../modules/home/foot.nix       # 終端機
-    ../modules/home/hyprlock.nix    # 鎖屏
     ../modules/home/fastfetch.nix   # 系統資訊
-    # ../modules/home/waybar.nix    # 狀態列（改用 noctalia-shell Bar）
-    # ../modules/home/mako.nix      # 通知（改用 noctalia-shell Notification）
-    # ../modules/home/swww.nix      # 桌布管理（改用 noctalia-shell Background）
-    # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia-shell SessionMenu）
-    # ../modules/home/fuzzel.nix    # 應用程式啟動器（改用 noctalia AppLauncher）
+    # 鎖屏改用 noctalia 原生鎖屏
+    # ../modules/home/waybar.nix    # 狀態列（改用 noctalia Bar）
+    # ../modules/home/mako.nix      # 通知（改用 noctalia Notification）
+    # ../modules/home/swww.nix      # 桌布管理（改用 noctalia Wallpaper）
+    # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia Session Panel）
+    # ../modules/home/fuzzel.nix    # 應用程式啟動器（改用 noctalia Launcher）
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
@@ -115,85 +115,113 @@
     ];
   };
 
-  # ── Noctalia Shell ───────────────────────────────────────────────
-  programs.noctalia-shell = {
+  # ── Noctalia（v5，設定改為 TOML schema，經 tomlFormat 由此 attrset 產生）───
+  # 完整 schema 參考 https://docs.noctalia.dev/noctalia/
+  # v4 有、但 v5 目前文件中找不到對應設定的項目，先移除：
+  # （enableBlurBehind、panelBackgroundOpacity、panelsAttachedToBar、tooltipsEnabled、fontFixed、
+  # largeButtonsStyle、sessionMenu 的 position/showHeader、ControlCenter 的 useDistroLogo）
+  # 等 v5 出穩定版後，再回頭確認是否已新增等效設定。
+  programs.noctalia = {
     enable = true;
     settings = {
-      appLauncher = {
-        terminalCommand = "foot -e";
-      };
-      bar = {
-        position = "top";
-        backgroundOpacity = 0.2;
-        frameRadius = 12;
-        barType = "simple";
-        # displayMode = "auto_hide";
-        autoHideDelay = 500;
-        autoShowDelay = 150;
-        widgetSpacing = 6;
-        outerCorners = true;
-        widgets = {
-          left = [
-            { id = "Launcher"; icon = "rocket"; }
-            { id = "Clock"; formatHorizontal = "HH:mm ddd, MMM dd"; }
-            { id = "ActiveWindow"; maxWidth = 145; showIcon = true; showText = true; hideMode = "hidden"; }
-          ];
-          center = [
-            { id = "Workspace"; labelMode = "index"; hideUnoccupied = false; }
-          ];
-          right = [
-            { id = "NotificationHistory"; showUnreadBadge = true; }
-            { id = "Volume"; middleClickCommand = "pavucontrol"; }
-            { id = "Brightness"; }
-            { id = "Tray"; }
-            { id = "ControlCenter"; icon = "noctalia"; useDistroLogo = true; }
+      shell = {
+        font_family       = "JetBrainsMono Nerd Font";
+        time_format       = "%H\n%M";                # 對應舊 general.clockFormat = "hh\\nmm"
+        corner_radius_scale = 1.0;                     # 對應舊 general.radiusRatio
+        telemetry_enabled = false;
+
+        animation = {
+          enabled = true;
+          speed   = 1.0;
+        };
+
+        session = {
+          grid           = true;                        # 對應舊 largeButtonsLayout = "grid"
+          show_shortcuts = true;                         # 對應舊 showKeybinds
+
+          actions = [
+            { action = "lock";     enabled = true; shortcut = "1"; countdown_seconds = 10; }
+            { action = "suspend";  enabled = true; shortcut = "2"; countdown_seconds = 10; }
+            # v5 內建 action 列舉沒有 hibernate/rebootToUefi，改用 command 自訂
+            { action = "command";  enabled = true; shortcut = "3"; countdown_seconds = 10; label = "Hibernate";       glyph = "moon";    command = "systemctl hibernate"; }
+            { action = "reboot";   enabled = true; shortcut = "4"; countdown_seconds = 10; }
+            { action = "logout";   enabled = true; shortcut = "5"; countdown_seconds = 10; }
+            { action = "shutdown"; enabled = true; shortcut = "6"; countdown_seconds = 10; }
+            { action = "command";  enabled = true;                                          label = "Reboot to UEFI"; glyph = "settings"; command = "systemctl reboot --firmware-setup"; }
           ];
         };
       };
-      colorSchemes = {
-        darkMode = true;
-        generationMethod = "tonal-spot";
-        useWallpaperColors = true;
+
+      theme = {
+        mode            = "dark";                     # 對應舊 colorSchemes.darkMode
+        source          = "wallpaper";                # 對應舊 colorSchemes.useWallpaperColors
+        wallpaper_scheme = "m3-tonal-spot";            # 對應舊 generationMethod = "tonal-spot"
       };
-      ui = {
-        fontDefault = "JetBrainsMono Nerd Font";
-        fontFixed = "JetBrainsMono Nerd Font";
-        panelBackgroundOpacity = 0.85;
-        panelsAttachedToBar = true;
-        tooltipsEnabled = true;
+
+      notification = {
+        enable_daemon       = true;
+        position            = "top_right";
+        collapse_on_dismiss = true;                    # 對應舊 clearDismissed
       };
-      notifications = {
-        location = "top_right";
-        clearDismissed = true;
-        enabled = true;
+
+      # 原生鎖屏（取代 v4 的外部 hyprlock.nix）。外觀（時鐘樣式、模糊程度、
+      # 桌布）用 lockscreen widget 編輯器（IPC: lockscreen-widgets-edit）
+      # 執行期調整，這裡先只開啟並保留 v4 hyprlock.conf「睡眠前必定鎖屏」的行為。
+      lockscreen = {
+        enabled              = true;
+        lock_before_suspend  = true;
+        allow_empty_password = false;
       };
-      general = {
-        animationSpeed = 1;
-        animationDisabled = false;
-        telemetryEnabled = false;
-        enableBlurBehind = true;
-        enableShadows = true;
-        clockFormat = "hh\\nmm";
-        clockStyle = "custom";
-        radiusRatio = 1;
+
+      # 注意：這裡一律用巢狀 attrset（bar.main、widget.launcher…）而非帶點的
+      # 字串 key（"bar.main"）。後者會被 tomlFormat 序列化成單一個名字裡帶
+      # 點的 TOML key，不等於 [bar.main] 這種巢狀 table，會讓 noctalia 讀不到。
+      bar = {
+        order = [ "main" ];
+        main = {
+          position            = "top";
+          background_opacity  = 0.2;
+          radius              = 12;                     # 對應舊 frameRadius
+          concave_edge_corners = true;                   # 對應舊 outerCorners
+          widget_spacing      = 6;
+          auto_hide           = false;
+
+          start  = [ "launcher" "clock" "active_window" ];
+          center = [ "workspaces" ];
+          end    = [ "notifications" "volume" "brightness" "tray" "control-center" ];
+        };
       };
-      sessionMenu = {
-        countdownDuration  = 10000;
-        enableCountdown    = true;
-        largeButtonsLayout = "grid";
-        largeButtonsStyle  = true;
-        position           = "center";
-        showHeader         = true;
-        showKeybinds       = true;
-        powerOptions = [
-          { action = "lock";         command = ""; countdownEnabled = true; enabled = true; keybind = "1"; }
-          { action = "suspend";      command = ""; countdownEnabled = true; enabled = true; keybind = "2"; }
-          { action = "hibernate";    command = ""; countdownEnabled = true; enabled = true; keybind = "3"; }
-          { action = "reboot";       command = ""; countdownEnabled = true; enabled = true; keybind = "4"; }
-          { action = "logout";       command = ""; countdownEnabled = true; enabled = true; keybind = "5"; }
-          { action = "shutdown";     command = ""; countdownEnabled = true; enabled = true; keybind = "6"; }
-          { action = "rebootToUefi"; command = ""; countdownEnabled = true; enabled = true; keybind = "";  }
-        ];
+
+      widget = {
+        launcher = {
+          glyph = "rocket";
+        };
+
+        clock = {
+          format = "%H:%M %a, %b %d";                  # 對應舊 formatHorizontal = "HH:mm ddd, MMM dd"
+        };
+
+        active_window = {
+          max_length = 145;
+          display    = "icon_and_text";
+        };
+
+        workspaces = {
+          label_source              = "id";             # 對應舊 labelMode = "index"
+          labels_only_when_occupied = false;             # 對應舊 hideUnoccupied = false
+        };
+
+        notifications = {
+          hide_when_no_unread = false;                  # 對應舊 showUnreadBadge = true（一律顯示數量徽章）
+        };
+
+        volume.actions = {
+          middle = "exec pavucontrol";                  # 對應舊 middleClickCommand
+        };
+
+        control-center = {
+          glyph = "noctalia";
+        };
       };
     };
   };

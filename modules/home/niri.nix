@@ -6,16 +6,20 @@
     swayidle            # 閒置後自動鎖屏
   ];
 
-  # ── 閒置管理（10 分鐘後鎖屏，20 分鐘後睡眠）────────────────────
+  # ── 閒置管理（10 分鐘後鎖屏，20 分鐘後鎖屏並睡眠）───────────────
+  # 鎖屏改用 noctalia v5 原生鎖屏（`noctalia msg session ...`），
+  # 相關樣式在 programs.noctalia.settings.lockscreen
+  # （home/default.nix）設定，或執行期用 noctalia 的鎖屏 widget 編輯器調整。
   services.swayidle = {
     enable    = true;
     timeouts  = [
-      { timeout = 600;  command = "${pkgs.hyprlock}/bin/hyprlock"; }
-      { timeout = 1200; command = "systemctl suspend"; }
+      { timeout = 600;  command = "noctalia msg session lock"; }
+      { timeout = 1200; command = "noctalia msg session lock-and-suspend"; }
     ];
     events = [
-      { event = "before-sleep"; command = "${pkgs.hyprlock}/bin/hyprlock"; }
-      { event = "lock";         command = "${pkgs.hyprlock}/bin/hyprlock"; }
+      # before-sleep：涵蓋非本設定觸發的睡眠，確保睡眠前一定鎖屏。
+      { event = "before-sleep"; command = "noctalia msg session lock"; }
+      { event = "lock";         command = "noctalia msg session lock"; }
     ];
   };
 
@@ -111,7 +115,9 @@
 
     // ── 啟動時執行 ──────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d" "--replace"
-    spawn-at-startup "sh" "-c" "QT_IM_MODULE=none XMODIFIERS=@im=none noctalia-shell"
+    // v5 起 noctalia 已改為原生 C++/OpenGL、非 Qt/QML，故不再需要
+    // QT_IM_MODULE=none / XMODIFIERS=@im=none 這組給 Qt 用的 IME workaround。
+    spawn-at-startup "noctalia"
     spawn-at-startup "xwayland-satellite"
 
     prefer-no-csd
@@ -158,11 +164,13 @@
 
     binds {
         // ── 應用程式 ─────────────────────────────────────────
+        // v5 起 IPC 指令由 `noctalia-shell ipc call <target> <action>`
+        // 改為 `noctalia msg <command>`，詳見 https://docs.noctalia.dev/noctalia/ipc/
         Mod+Return  { spawn "foot"; }
-        Mod+D       { spawn-sh "noctalia-shell ipc call launcher toggle"; }
-        Mod+Ctrl+L  { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
-        Mod+Shift+E { spawn-sh "noctalia-shell ipc call sessionMenu toggle"; }
-        Mod+Period  { spawn-sh "noctalia-shell ipc call launcher emoji"; }
+        Mod+D       { spawn-sh "noctalia msg panel-toggle launcher"; }
+        Mod+Ctrl+L  { spawn-sh "noctalia msg session lock"; }
+        Mod+Shift+E { spawn-sh "noctalia msg panel-toggle session"; }
+        Mod+Period  { spawn-sh "noctalia msg panel-toggle launcher /emo"; }  // emoji picker 改為 launcher 的 /emo 前綴 provider
 
         // 截圖（grim + slurp）
         Print           { screenshot; }
@@ -170,8 +178,8 @@
         Alt+Print       { screenshot-window; }
         Mod+Shift+S     { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
 
-        // 剪貼簿歷史（noctalia 內建）
-        Mod+V { spawn-sh "noctalia-shell ipc call launcher clipboard"; }
+        // 剪貼簿歷史（noctalia 內建，v5 起是獨立面板而非 launcher 的子模式）
+        Mod+V { spawn-sh "noctalia msg panel-toggle clipboard"; }
 
         // ── 視窗焦點（vim 鍵 + 方向鍵）──────────────────────
         Mod+H           { focus-column-left; }
@@ -242,15 +250,15 @@
         Mod+Ctrl+Up     { move-column-to-workspace-up; }
 
         // ── 系統媒體 / 音量 / 亮度 ───────────────────────────
-        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume increase"; }
-        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume decrease"; }
-        XF86AudioMute         allow-when-locked=true { spawn-sh "noctalia-shell ipc call volume muteOutput"; }
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+        XF86AudioMute         allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
         XF86AudioMicMute      { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-        XF86MonBrightnessUp   { spawn-sh "noctalia-shell ipc call brightness increase"; }
-        XF86MonBrightnessDown { spawn-sh "noctalia-shell ipc call brightness decrease"; }
-        XF86AudioPlay         { spawn-sh "noctalia-shell ipc call media playPause"; }
-        XF86AudioNext         { spawn-sh "noctalia-shell ipc call media next"; }
-        XF86AudioPrev         { spawn-sh "noctalia-shell ipc call media previous"; }
+        XF86MonBrightnessUp   { spawn-sh "noctalia msg brightness-up"; }
+        XF86MonBrightnessDown { spawn-sh "noctalia msg brightness-down"; }
+        XF86AudioPlay         { spawn-sh "noctalia msg media toggle"; }
+        XF86AudioNext         { spawn-sh "noctalia msg media next"; }
+        XF86AudioPrev         { spawn-sh "noctalia msg media previous"; }
 
         // ── niri 說明 ────────────────────────────────────────
         Mod+Shift+Slash { show-hotkey-overlay; }

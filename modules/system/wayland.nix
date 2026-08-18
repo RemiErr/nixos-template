@@ -84,7 +84,7 @@
       # JetBrains Mono Nerd Font（終端機 / 程式碼）
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
-      material-design-icons        # noctalia-shell 圖示字型
+      # v5 起 noctalia 已內建 Tabler icon 字型（noctalia-tabler-icons.ttf），供圖示使用。
       lxgw-wenkai-screen           # 霞鶩文楷（繁體中文顯示字型）
       maple-mono.NF-unhinted       # Maple Mono NF
     ];
