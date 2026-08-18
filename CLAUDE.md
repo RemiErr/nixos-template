@@ -40,8 +40,9 @@ modules/home/          # Home Manager 模組（每個元件獨立一檔）
   foot.nix             # 終端機（foot）
   fish.nix             # Shell（fish）
   fuzzel.nix           # 應用程式啟動器
-  hyprlock.nix         # 鎖定畫面
   fastfetch.nix        # 系統資訊
+  # 鎖定畫面已改用 noctalia 原生鎖屏（見 home/default.nix 的
+  # programs.noctalia.settings.lockscreen），不再有獨立的 hyprlock.nix
 home/default.nix       # Home Manager 入口，彙整所有 home 模組
 ```
 
@@ -68,7 +69,7 @@ home/default.nix       # Home Manager 入口，彙整所有 home 模組
 
 - **nixpkgs**：`nixos-26.05`
 - **home-manager**：`release-26.05`
-- **noctalia-shell**：釘選在 `v4.7.3`（repo 已改名 `noctalia-dev/noctalia` 且主線進入 v5 beta，設定 schema 與指令名稱不相容，故暫不跟隨 main）
+- **noctalia**：釘選在 `v5.0.0-beta.8`（repo 已改名 `noctalia-dev/noctalia`；v5 是 Qt/QML → 原生 C++/OpenGL 的全面重寫，binary 由 `noctalia-shell` 改名 `noctalia`、設定檔由 JSON 改為 TOML、IPC 指令由 `noctalia-shell ipc call ...` 改為 `noctalia msg ...`。仍是 beta，故釘選明確 tag 而非跟隨 main）
 - **module exports**：`nixosModules.default`（系統模組）、`homeModules.default`（home 模組）
 - `vars` 從 `variables.nix` import，透過 `specialArgs` / `extraSpecialArgs` 傳入所有模組
 
