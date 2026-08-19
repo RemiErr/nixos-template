@@ -7,12 +7,6 @@
     ../modules/home/fish.nix       # Shell
     ../modules/home/foot.nix       # 終端機
     ../modules/home/fastfetch.nix   # 系統資訊
-    # 鎖屏改用 noctalia 原生鎖屏
-    # ../modules/home/waybar.nix    # 狀態列（改用 noctalia Bar）
-    # ../modules/home/mako.nix      # 通知（改用 noctalia Notification）
-    # ../modules/home/swww.nix      # 桌布管理（改用 noctalia Wallpaper）
-    # ../modules/home/wlogout.nix   # 登出選單（改用 noctalia Session Panel）
-    # ../modules/home/fuzzel.nix    # 應用程式啟動器（改用 noctalia Launcher）
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
