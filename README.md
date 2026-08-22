@@ -346,10 +346,10 @@ sda    256G disk
 
 ```bash
 # EFI： FAT32 格式
-sudo mkfs.fat -F 32 -n boot /dev/sda1
+sudo mkfs.fat -F 32 -n esp-boot /dev/sda1
 
 # Root：Btrfs 格式
-sudo mkfs.btrfs /dev/sda2
+sudo mkfs.btrfs -L nixos-root /dev/sda2
 ```
 
 > [!NOTE]
@@ -387,19 +387,19 @@ path @swap
 
 ```bash
 # Root 子卷（/）
-sudo mount -o subvol=@,compress=zstd,noatime /dev/sda2 /mnt
+sudo mount -o subvol=@,compress=zstd,noatime /dev/disk/by-label/nixos-root /mnt
 
 # Home 子卷（/home）
 sudo mkdir -p /mnt/home
-sudo mount -o subvol=@home,compress=zstd,noatime /dev/sda2 /mnt/home
+sudo mount -o subvol=@home,compress=zstd,noatime /dev/disk/by-label/nixos-root /mnt/home
 
 # Swap 子卷（/swap）
 sudo mkdir -p /mnt/swap
-sudo mount -o subvol=@swap,noatime /dev/sda2 /mnt/swap
+sudo mount -o subvol=@swap,noatime /dev/disk/by-label/nixos-root /mnt/swap
 
 # EFI（/boot）
 sudo mkdir -p /mnt/boot
-sudo mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
+sudo mount -o umask=077 /dev/disk/by-label/esp-boot /mnt/boot
 
 # 確認掛載點與選項
 findmnt /mnt
@@ -514,7 +514,7 @@ cp /mnt/etc/nixos/hardware-configuration.nix \
    ~/.config/nixfiles/hardware-configuration.nix
 ```
 
-確認內容正確（應包含你的磁碟 UUID）：
+確認硬碟掛載內容正確：
 ```bash
 cat ~/.config/nixfiles/hardware-configuration.nix
 # 查看是否有 fileSystems."/" 和 fileSystems."/boot"
