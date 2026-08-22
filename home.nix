@@ -142,11 +142,10 @@
           actions = [
             { action = "lock";     enabled = true; shortcut = "1"; countdown_seconds = 10; }
             { action = "suspend";  enabled = true; shortcut = "2"; countdown_seconds = 10; }
-            # v5 內建 action 列舉沒有 hibernate/rebootToUefi，改用 command 自訂
-            { action = "command";  enabled = true; shortcut = "3"; countdown_seconds = 10; label = "Hibernate";       glyph = "moon";    command = "systemctl hibernate"; }
-            { action = "reboot";   enabled = true; shortcut = "4"; countdown_seconds = 10; }
-            { action = "logout";   enabled = true; shortcut = "5"; countdown_seconds = 10; }
-            { action = "shutdown"; enabled = true; shortcut = "6"; countdown_seconds = 10; }
+            { action = "reboot";   enabled = true; shortcut = "3"; countdown_seconds = 10; }
+            { action = "logout";   enabled = true; shortcut = "4"; countdown_seconds = 10; }
+            { action = "shutdown"; enabled = true; shortcut = "5"; countdown_seconds = 10; }
+            # v5 內建 action 列舉沒有 rebootToUefi，改用 command 自訂
             { action = "command";  enabled = true;                                          label = "Reboot to UEFI"; glyph = "settings"; command = "systemctl reboot --firmware-setup"; }
           ];
         };
