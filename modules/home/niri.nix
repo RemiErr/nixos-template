@@ -253,7 +253,7 @@
 
         // ── niri 說明 ────────────────────────────────────────
         Mod+Shift+Slash { show-hotkey-overlay; }
-        Mod+Escape      { spawn "sh" "-c" "niri msg action quit --skip-confirmation"; }
+        Mod+Escape      { quit; }
     }
   '';
 }
