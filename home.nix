@@ -50,6 +50,11 @@
     # 檔案管理器
     yazi          # 終端機檔案管理器
 
+    # 文件與壓縮檔
+    mousepad      # 輕量圖形文字編輯器
+    zathura       # 輕量 PDF 閱讀器
+    xarchiver     # 圖形壓縮檔管理器
+
     # 圖片檢視
     imv           # Wayland 原生圖片檢視器
 
@@ -67,6 +72,19 @@
   # ── XDG 使用者目錄 ───────────────────────────────────────────────
   xdg = {
     enable = true;
+    # 依清單順序設定各套件宣告支援的 MIME 預設應用程式。
+    mimeApps = {
+      enable = true;
+      defaultApplicationPackages = with pkgs; [
+        thunar     # 目錄
+        xarchiver  # 壓縮檔
+        zathura    # PDF
+        mousepad   # 文字
+        imv        # 圖片
+        vlc        # 影音
+        firefox    # Web 與 URL scheme
+      ];
+    };
     userDirs = {
       enable           = true;
       createDirectories = true;

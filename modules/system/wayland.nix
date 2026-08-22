@@ -22,6 +22,19 @@
     };
   };
 
+  # ── 輕量圖形檔案管理 ────────────────────────────────────
+  # 只啟用 Thunar 與必要後端，不安裝完整 Xfce 桌面。
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
+  };
+  services.gvfs.enable    = true; # 回收站、遠端位置與掛載
+  services.tumbler.enable = true; # 檔案縮圖
+  services.udisks2.enable = true; # USB 等可移除儲存裝置
+
   # ── 圖形加速 ────────────────────────────────────────────────────
   hardware.graphics = {
     enable     = true;
