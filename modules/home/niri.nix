@@ -7,9 +7,6 @@
   ];
 
   # ── 閒置管理（10 分鐘後鎖屏，20 分鐘後鎖屏並睡眠）───────────────
-  # 鎖屏改用 noctalia v5 原生鎖屏（`noctalia msg session ...`），
-  # 相關樣式在 programs.noctalia.settings.lockscreen
-  # （home/default.nix）設定，或執行期用 noctalia 的鎖屏 widget 編輯器調整。
   services.swayidle = {
     enable    = true;
     timeouts  = [
