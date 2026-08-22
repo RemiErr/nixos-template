@@ -93,7 +93,7 @@
       user.email = vars.git.email;
       init.defaultBranch = "main";
       pull.rebase        = false;
-      core.editor        = "nvim";
+      core.editor        = vars.editor;
       diff.tool          = "vimdiff";
 
       alias = {
