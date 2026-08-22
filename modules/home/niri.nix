@@ -161,7 +161,7 @@
 
     binds {
         // ── 應用程式 ─────────────────────────────────────────
-        Mod+Return  { spawn "foot"; }
+        Mod+Return  { spawn "footclient"; }
         Mod+Space     hotkey-overlay-title="功能選單" { spawn-sh "noctalia msg panel-toggle launcher"; }
         Mod+Ctrl+L     hotkey-overlay-title="鎖屏（Lock）" { spawn-sh "noctalia msg session lock"; }
         Mod+Ctrl+P     hotkey-overlay-title="電源選單（Power Menu）" { spawn-sh "noctalia msg panel-toggle session"; }
