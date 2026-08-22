@@ -198,7 +198,7 @@
         };
 
         clock = {
-          format = "%H:%M %a, %b %d";                  # 對應舊 formatHorizontal = "HH:mm ddd, MMM dd"
+          format = "{:%H:%M %a, %b %d}";               # v5 clock widget 使用 {:…} 格式
         };
 
         active_window = {
