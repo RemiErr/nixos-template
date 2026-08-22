@@ -129,6 +129,7 @@
         time_format       = "%H\n%M";                # 對應舊 general.clockFormat = "hh\\nmm"
         corner_radius_scale = 1.0;                     # 對應舊 general.radiusRatio
         telemetry_enabled = false;
+        polkit_agent      = true;
 
         animation = {
           enabled = true;
