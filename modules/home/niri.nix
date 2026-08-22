@@ -24,7 +24,6 @@
     ];
     events = [
       # before-sleep：涵蓋非本設定觸發的睡眠，確保睡眠前一定鎖屏。
-      { event = "before-sleep"; command = "noctalia msg session lock"; }
       { event = "lock";         command = "noctalia msg session lock"; }
     ];
   };
