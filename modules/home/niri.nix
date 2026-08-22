@@ -6,6 +6,15 @@
     swayidle            # 閒置後自動鎖屏
   ];
 
+  # 避免同一個 Niri session 產生兩個啟動來源
+  # Fcitx5 由 spawn-at-startup 啟動，遮蔽套件的 XDG autostart
+  xdg.configFile."autostart/org.fcitx.Fcitx5.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Fcitx 5
+    Hidden=true
+  '';
+
   # ── 閒置管理（10 分鐘後鎖屏，20 分鐘後鎖屏並睡眠）───────────────
   services.swayidle = {
     enable    = true;

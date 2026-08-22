@@ -5,9 +5,8 @@
   #
   # NixOS 會自動：
   #   1. 安裝 fcitx5 及指定附加元件
-  #   2. 建立 systemd user service（fcitx5.service）
-  #   3. 設定 XDG autostart
-  #   4. 注入必要環境變數
+  #   2. 注入必要環境變數
+  # Fcitx5 的生命週期由 Niri spawn-at-startup 管理。
   #
   i18n.inputMethod = {
     enable = true;
