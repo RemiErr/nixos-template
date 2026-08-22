@@ -3,7 +3,7 @@
 這是一份採用了以下方案的 Flakes 模板。
 
 - 視窗管理器：[Niri](https://github.com/YaLTeR/niri)（磁磚式 Wayland WM）
-- 桌面 Shell：[Noctalia Shell](https://github.com/noctalia-dev/noctalia-shell)
+- 桌面 Shell：[Noctalia Shell](https://github.com/noctalia-dev/noctalia)
 - 終端機：Foot + Fish shell
 - 輸入法：fcitx5 + 新注音（Chewing）
 - 字型：Maple Mono NF / JetBrainsMono Nerd Font
