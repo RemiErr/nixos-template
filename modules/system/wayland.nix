@@ -15,6 +15,7 @@
     config = {
       niri = {
         default = [ "gnome" "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
       };
       common.default = [ "gtk" ];
@@ -65,7 +66,6 @@
     MOZ_ENABLE_WAYLAND               = "1";          # Firefox
     QT_QPA_PLATFORM                  = "wayland;xcb"; # Qt Wayland，xcb 為後備
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";        # 讓 niri 管理視窗裝飾
-    GDK_BACKEND                      = "wayland,x11,*"; # GTK
     SDL_VIDEODRIVER                  = "wayland";    # SDL2 遊戲
     CLUTTER_BACKEND                  = "wayland";    # Clutter
     XDG_SESSION_TYPE                 = "wayland";
