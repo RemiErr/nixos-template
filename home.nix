@@ -177,7 +177,6 @@
       # 字串 key（"bar.main"）。後者會被 tomlFormat 序列化成單一個名字裡帶
       # 點的 TOML key，不等於 [bar.main] 這種巢狀 table，會讓 noctalia 讀不到。
       bar = {
-        order = [ "main" ];
         main = {
           position            = "top";
           background_opacity  = 0.2;
