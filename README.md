@@ -52,7 +52,7 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config
 ```
 
 > [!NOTE]
-> **教學由 Claude 生成再編修**，本文是自用的備忘紀錄兼參考範例。  
+> **教學由 Claude 生成再編修**，本文是自用的備忘紀錄兼參考範例。
 
 ---
 
@@ -166,9 +166,14 @@ nano variables.nix
 
 ## 2. 磁碟與掛載
 
+
+本篇預設 NixOS 使用 UEFI 開機，提供以下兩種結構的配置流程：
+- 方案一：[esp + swap + ext4](#21-linux-磁碟結構說明)
+- 方案二：[esp + btrfs](#22-linux-磁碟結構說明---btrfs)
+
 ### 2.1 Linux 磁碟結構說明
 
-NixOS 使用 UEFI 開機，需要以下三個分割區：
+ext4 基礎配置需要以下三個分割區：
 
 | 分割區 | 格式  | 掛載點   | 作用                 | 建議大小                        |
 | ------ | ----- | -------- | -------------------- | ------------------------------- |
@@ -176,7 +181,10 @@ NixOS 使用 UEFI 開機，需要以下三個分割區：
 | sda2   | swap  | `[swap]` | 虛擬記憶體           | 等於 RAM（支援休眠）；最少 4 GB |
 | sda3   | ext4  | `/`      | 根目錄               | 剩餘全部（建議 ≥ 30 GB）        |
 
-### 2.2 確認目標磁碟
+> [!IMPORTANT]
+> 範例採用 `/dev/sda`，若你的硬碟裝置名稱不同，請將所有 `/dev/sda` 替換成實際裝置。
+
+### 2.1.1 確認目標磁碟
 
 > [!CAUTION]
 > ⚠️ **警告**：之後的操作會清除磁碟上的 *所有資料*，操作前請再三確認磁碟名稱。
@@ -195,7 +203,7 @@ sdb     16G disk              ← USB 開機碟
 
 以下步驟以 `/dev/sda` 為例，請依實際情況替換。
 
-### 2.3 建立分割區
+### 2.1.2 建立分割區
 
 ```bash
 # 建立 GPT 分割表（清除現有分割資訊）
@@ -225,7 +233,7 @@ sda    256G disk
 └─sda3 251G part   ← root
 ```
 
-### 2.4 格式化分割區
+### 2.1.3 格式化分割區
 
 ```bash
 # EFI：FAT32 格式，標籤 "boot"
@@ -241,7 +249,7 @@ sudo swapon /dev/sda2
 sudo mkfs.ext4 -L nixos /dev/sda3
 ```
 
-### 2.5 掛載分割區
+### 2.1.4 掛載分割區
 
 ```bash
 # 掛載 root
@@ -256,12 +264,217 @@ lsblk /dev/sda
 # sda3 應顯示 /mnt，sda1 應顯示 /mnt/boot
 ```
 
+### 2.2 Linux 磁碟結構說明 — Btrfs
+
+Btrfs 是支援 Copy-on-Write、checksum、透明壓縮、快照及子卷的檔案系統。
+「子卷（subvolume）」看起來像目錄，但可以獨立掛載及建立快照；各子卷共用同一個 Btrfs partition 的可用空間，不需要預先分配固定容量。
+
+本篇以這三個基本子卷為例：
+
+| 子卷    | 掛載點  | 用途                                        |
+| ------- | ------- | ------------------------------------------- |
+| `@`     | `/`     | 系統根目錄                                  |
+| `@home` | `/home` | 使用者資料，與系統根目錄分開管理            |
+| `@swap` | `/swap` | 放置 Btrfs swapfile，避免被一般系統快照包含 |
+
+> [!IMPORTANT]
+> 範例採用 `/dev/sda`，若你的硬碟裝置名稱不同，請將所有 `/dev/sda` 替換成實際裝置。
+
+> [!NOTE]
+> 前文建立的 swap 分割區與 `@swap/swapfile` 是兩種 swap 方案。
+> 建議只使用其中一種，以免容量規劃及休眠設定混淆了。
+> 以下示範 Btrfs swapfile，因此不需要建立前文的 `swap` 分割區。
+
+#### 2.2.1 建立分割區
+
+在這邊我們使用另一個磁碟分割工具 `cfdisk` 來建立分割區。當然，你也可以使用 `parted` 完成操作。
+
+進入 cfdisk 介面並操作：
+```bash
+# 如果有跳出分割表選單，選擇 "GPT"
+sudo cfdisk /dev/sda
+
+# EFI 分割區：
+# 1. 選擇 [New]
+# 2. Partition size: 512M
+# 3. 選擇 [Type]: EFI System
+
+# Btrfs 分割區：
+# 1. 選擇 [New]
+# 2. Partition size: 剩餘全部空間
+# 3. 選擇 [Type]: Linux filesystem
+
+# 選擇 [Write]
+# 輸入 yes
+# 選擇 [Quit]
+
+# 確認結果
+lsblk /dev/sda
+```
+
+預期結構：
+```
+NAME   SIZE TYPE
+sda    256G disk
+├─sda1 512M part   ← EFI
+└─sda2 255G part   ← root
+```
+
+#### 2.2.2 格式分割區
+
+```bash
+# EFI： FAT32 格式
+sudo mkfs.fat -F 32 -n boot /dev/sda1
+
+# Root：Btrfs 格式
+sudo mkfs.btrfs /dev/sda2
+```
+
+> [!NOTE]
+> 若 Live ISO 沒有 `mkfs.btrfs` 或 `btrfs`，請執行：
+> `nix-shell -p btrfs-progs`
+
+#### 2.2.3 建立基礎子卷
+
+先暫時掛載 Btrfs 的 top-level，再建立 `@`、`@home`、`@swap`：
+
+```bash
+sudo mount /dev/sda2 /mnt
+
+sudo btrfs subvolume create /mnt/@
+sudo btrfs subvolume create /mnt/@home
+sudo btrfs subvolume create /mnt/@swap
+
+# 確認子卷
+sudo btrfs subvolume list /mnt
+
+sudo umount /mnt
+```
+
+預期至少會看到：
+
+```text
+path @
+path @home
+path @swap
+```
+
+#### 2.2.4 掛載子卷
+
+依照實際系統掛載點重新掛載，Root 使用 `zstd` 透明壓縮並關閉 atime：
+
+```bash
+# Root 子卷（/）
+sudo mount -o subvol=@,compress=zstd,noatime /dev/sda2 /mnt
+
+# Home 子卷（/home）
+sudo mkdir -p /mnt/home
+sudo mount -o subvol=@home,compress=zstd,noatime /dev/sda2 /mnt/home
+
+# Swap 子卷（/swap）
+sudo mkdir -p /mnt/swap
+sudo mount -o subvol=@swap,noatime /dev/sda2 /mnt/swap
+
+# EFI（/boot）
+sudo mkdir -p /mnt/boot
+sudo mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
+
+# 確認掛載點與選項
+findmnt /mnt
+findmnt /mnt/home
+findmnt /mnt/swap
+findmnt /mnt/boot
+```
+
+> [!NOTE]
+> - `compress=zstd` 只影響新寫入且適合壓縮的資料
+> - `noatime` 避免每次讀取檔案都更新 access time
+
+#### 2.2.5 建立 Btrfs swapfile
+
+Btrfs swapfile 必須是預先配置、NODATACOW 且未壓縮的檔案。使用
+`btrfs filesystem mkswapfile` 會建立符合這些條件的 swapfile：
+
+```bash
+# 以下以 8 GB 為例，請依 RAM 與需求調整
+sudo btrfs filesystem mkswapfile --size 8G /mnt/swap/swapfile
+sudo swapon /mnt/swap/swapfile
+
+# 確認已啟用
+swapon --show
+```
+
+> [!IMPORTANT]
+> 記得在 `/tmp/my-nixos/configuration.nix` 加入以下設定
+> **configuration.nix**
+> ```nix
+> swapDevices = [
+>   { device = "/swap/swapfile"; }
+> ];
+> ```
+>
+> ⚠️ *不是* `nixos-generate-config` 產生的檔案 ⚠️
+> 同時必須在 `nixos-config/flake.nix` 的 `modules` 中反註解
+> `./configuration.nix`，並確保該檔案已加入 Git index，flake 才會載入它。
+>
+> **加入 Git index**
+> ```bash
+> git add -f configuration.nix
+> ```
+
+> [!WARNING]
+> 含有啟用中 swapfile 的 `@swap` 不可建立快照，也不要替 swapfile 啟用壓縮。
+> 若需要休眠，還必須另外設定正確的 resume device 與 Btrfs
+> resume offset；本節只完成一般 swap。希望採用最簡單休眠配置時，可沿用
+> 原本的 swap partition 方案。
+
+#### 2.2.6 增加其他子卷
+
+額外子卷適合用來建立獨立快照邊界。例如將 `/var/log` 放在 `@log`，可避免
+回滾 root 快照時一併回滾系統紀錄。
+
+如果 Btrfs top-level 還掛載在 `/mnt` 的話，可直接建立：
+
+```bash
+sudo btrfs subvolume create /mnt/@log
+```
+
+但若已完成前面的重新掛載，就需要先另外掛載 top-level：
+
+```bash
+sudo mkdir -p /mnt/btrfs-root
+sudo mount -o subvolid=5 /dev/sda2 /mnt/btrfs-root
+sudo btrfs subvolume create /mnt/btrfs-root/@log
+sudo umount /mnt/btrfs-root
+sudo rmdir /mnt/btrfs-root
+```
+
+接著建立掛載點並掛載：
+
+```bash
+sudo mkdir -p /mnt/var/log
+sudo mount -o subvol=@log,compress=zstd,noatime /dev/sda2 /mnt/var/log
+```
+
+最後在 `hardware-configuration.nix` 加入對應宣告：
+
+```nix
+fileSystems."/var/log" = {
+  device = "/dev/disk/by-uuid/<BTRFS-UUID>";
+  fsType = "btrfs";
+  options = [ "subvol=@log" "noatime" "compress=zstd" ];
+};
+```
+
+參考資料：[NixOS Wiki：Btrfs](https://wiki.nixos.org/wiki/Btrfs)、
+[Btrfs 文件：mount options 與 swapfile](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)。
+
 ---
 
 ## 3. 硬體識別
 
-**時機**：`/mnt` 掛載完成後，`nixos-install` 之前  
-**位置**：Live 環境終端機  
+**時機**：`/mnt` 掛載完成後，`nixos-install` 之前
+**位置**：Live 環境終端機
 **身分**：一般使用者（加 `sudo`）
 
 ```bash
@@ -283,6 +496,28 @@ cp /mnt/etc/nixos/hardware-configuration.nix \
 ```bash
 cat /tmp/my-nixos/hardware-configuration.nix
 # 查看是否有 fileSystems."/" 和 fileSystems."/boot"
+# Btrfs 配置另確認 fileSystems."/home"、fileSystems."/swap" 及各自的 options
+```
+
+**Btrfs options example**
+```nix
+fileSystems."/" = {
+  device = "/dev/disk/by-uuid/<BTRFS-UUID>";
+  fsType = "btrfs";
+  options = [ "subvol=@" "noatime" "compress=zstd" ];
+};
+
+fileSystems."/home" = {
+  device = "/dev/disk/by-uuid/<BTRFS-UUID>";
+  fsType = "btrfs";
+  options = [ "subvol=@home" "noatime" "compress=zstd" ];
+};
+
+fileSystems."/swap" = {
+  device = "/dev/disk/by-uuid/<BTRFS-UUID>";
+  fsType = "btrfs";
+  options = [ "subvol=@swap" "noatime" ];
+};
 ```
 
 **讓 Nix 看到這個檔案**：
@@ -294,8 +529,8 @@ cd /tmp/my-nixos
 git add -f hardware-configuration.nix
 ```
 
-> [!IMPORTANT]  
-> 不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。  
+> [!IMPORTANT]
+> 不需要 `git commit`，`git add` 後 Nix 即可讀取。日後在已安裝的系統上重新執行 `nixos-rebuild` 時，同樣需要確保這個檔案已被 stage。
 
 > [!CAUTION]
 > ⚠️ **注意**：`hardware-configuration.nix` 每台機器都不同，***絕對不可以*** 複製他人的檔案來使用！！
@@ -326,8 +561,8 @@ nix show-config | grep experimental-features
 
 ### 4.2 nixos-install 指令
 
-**時機**：`hardware-configuration.nix` 已複製進 repo 後  
-**位置**：Live 環境終端機  
+**時機**：`hardware-configuration.nix` 已複製進 repo 後
+**位置**：Live 環境終端機
 **身分**：root（sudo）
 
 ```bash
@@ -343,8 +578,8 @@ sudo nixos-install \
 
 ### 4.3 設定使用者密碼
 
-**時機**：`nixos-install` 完成後，重開機之前  
-**位置**：Live 環境終端機  
+**時機**：`nixos-install` 完成後，重開機之前
+**位置**：Live 環境終端機
 **身分**：root（sudo）
 
 安裝完成後，在重開機之前設定 `user` 的登入密碼：
@@ -409,7 +644,7 @@ cd ~/.config
 update           # 等同 sudo nixos-rebuild switch --flake .#<hostname>
 ```
 > [!IMPORTANT]
-> 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，將 Template 指向新的位置，並於修改後進行測試。  
+> 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，將 Template 指向新的位置，並於修改後進行測試。
 > `update ~/.config --override-input nixos-template path:~/<YOUR-LOCAL-PATH>/nixos-template`
 
 **套用 Home Manager 設定**：
