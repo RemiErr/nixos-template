@@ -48,7 +48,7 @@
     useTextGreeter = true;
     settings = {
       default_session = {
-        # --remember：記住上次選擇的 session
+        # --remember：記住上次成功登入的使用者名稱
         command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
         user    = "greeter";
       };
