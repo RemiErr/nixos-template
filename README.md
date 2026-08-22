@@ -17,10 +17,10 @@
 請 clone 該專案：[nixos-config](https://github.com/RemiErr/nixos-config)
 
 ```bash
-git clone https://github.com/RemiErr/nixos-config.git ~/.config
+git clone https://github.com/RemiErr/nixos-config.git ~/.config/nixfiles
 ```
 
-並使用 `~/.config` 目錄作為你的 overlay 起點，其中 `variables.nix` 用於存放系統參數，**請記得先填寫它**。
+並使用 `~/.config/nixfiles` 目錄作為你的 overlay 起點，其中 `variables.nix` 用於存放系統參數，**請記得先填寫它**。
 
 ---
 
@@ -42,13 +42,36 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config
     ├─ 3. 磁碟分割 → 格式化 → 掛載至 /mnt
     │
     ├─ 4. nixos-generate-config --root /mnt
-    │       └─ cp hardware-configuration.nix → /tmp/my-nixos/
+    │       └─ cp hardware-configuration.nix → ~/.config/nixfiles/
     │
-    ├─ 5. sudo nixos-install --flake /tmp/my-nixos#<hostname>
+    ├─ 5. sudo nixos-install --flake ~/.config/nixfiles#<hostname>
     │
     ├─ 6. sudo nixos-enter → passwd <username> → exit
     │
     └─ 7. sudo reboot（拔除 USB）
+```
+
+## 最終載入結構
+```
+~/.config/nixfiles/flake.nix
+│
+├─ variables.nix                      個人與主機參數
+├─ hardware-configuration.nix         機器硬體設定
+│
+├─ nixos-template.nixosModules.default
+│  ├─ common.nix                      Nix、開機、locale、SSH、基礎工具
+│  ├─ wayland.nix                     Niri、greetd、PipeWire、portal、字型
+│  ├─ input-method.nix                Fcitx5 + Chewing
+│  └─ users.nix                       使用者、sudo、NetworkManager
+│
+└─ Home Manager
+   └─ nixos-template.homeModules.default
+      ├─ Noctalia Shell
+      ├─ niri.nix
+      ├─ fish.nix
+      ├─ foot.nix
+      ├─ hyprlock.nix
+      └─ fastfetch.nix
 ```
 
 > [!NOTE]
@@ -129,14 +152,13 @@ nmcli device wifi connect "SSID名稱" password "密碼"
 ### 1.5 Clone overlay 並設定 variables.nix
 
 ```bash
-git clone https://github.com/RemiErr/nixos-config /tmp/my-nixos
-cd /tmp/my-nixos
+git clone https://github.com/RemiErr/nixos-config ~/.config/nixfiles
+cd ~/.config/nixfiles
 ```
 
-若 Live 環境沒有 `git`：
+若 Live 環境沒有 `git`，請先執行：
 ```bash
-nix-shell -p git --run "git clone https://github.com/RemiErr/nixos-config /tmp/my-nixos"
-cd /tmp/my-nixos
+nix-shell -p git
 ```
 
 **填寫 `variables.nix`**：
@@ -405,7 +427,7 @@ swapon --show
 ```
 
 > [!IMPORTANT]
-> 記得在 `/tmp/my-nixos/configuration.nix` 加入以下設定
+> 記得在 `~/.config/nixfiles/configuration.nix` 加入以下設定
 > **configuration.nix**
 > ```nix
 > swapDevices = [
@@ -489,12 +511,12 @@ sudo nixos-generate-config --root /mnt
 
 ```bash
 cp /mnt/etc/nixos/hardware-configuration.nix \
-   /tmp/my-nixos/hardware-configuration.nix
+   ~/.config/nixfiles/hardware-configuration.nix
 ```
 
 確認內容正確（應包含你的磁碟 UUID）：
 ```bash
-cat /tmp/my-nixos/hardware-configuration.nix
+cat ~/.config/nixfiles/hardware-configuration.nix
 # 查看是否有 fileSystems."/" 和 fileSystems."/boot"
 # Btrfs 配置另確認 fileSystems."/home"、fileSystems."/swap" 及各自的 options
 ```
@@ -525,7 +547,7 @@ fileSystems."/swap" = {
 Nix flake 只讀取 git 追蹤的檔案。`hardware-configuration.nix` 已在 `.gitignore` 中排除（機器專屬、不應提交），因此需要手動 stage：
 
 ```bash
-cd /tmp/my-nixos
+cd ~/.config/nixfiles
 git add -f hardware-configuration.nix
 ```
 
@@ -566,7 +588,7 @@ nix show-config | grep experimental-features
 **身分**：root（sudo）
 
 ```bash
-cd /tmp/my-nixos
+cd ~/.config/nixfiles
 sudo nixos-install \
   --flake .#<hostname> \
   --no-root-password
@@ -627,44 +649,44 @@ sudo echo "sudo OK"
 
 ### 5.3 日常維護
 
-首次開機後，將 overlay 放到你慣用的位置（例如 `~/.config`）：
+#### **套用系統設定**：
 
 ```bash
-cp -r /tmp/my-nixos ~/.config
-cd ~/.config
-```
-
-**套用系統設定**：
-```bash
-update ~/.config # 等同 sudo nixos-rebuild switch --flake ~/.config#<hostname>
+update ~/.config/nixfiles # 等同 sudo nixos-rebuild switch --flake ~/.config/nixfiles#<hostname>
 ```
 或
 ```bash
-cd ~/.config
+cd ~/.config/nixfiles
 update           # 等同 sudo nixos-rebuild switch --flake .#<hostname>
 ```
 > [!IMPORTANT]
 > 如果你有覆蓋 Template 設定的需求，可以 Clone/Fork：[nixos-template](https://github.com/RemiErr/nixos-template)，將 Template 指向新的位置，並於修改後進行測試。
-> `update ~/.config --override-input nixos-template path:~/<YOUR-LOCAL-PATH>/nixos-template`
+> ```bash
+> update ~/.config/nixfiles \
+> --override-input nixos-template path:~/<YOUR-LOCAL-PATH>/nixos-template
+> ```
 
-**套用 Home Manager 設定**：
+#### **套用 Home Manager 設定**：
+
 ```bash
-hm ~/.config  # 等同 home-manager switch --flake ~/.config#<username>@<hostname>
+hm ~/.config/nixfiles  # 等同 home-manager switch --flake ~/.config/nixfiles#<username>@<hostname>
 ```
 或
 ```bash
-cd ~/.config
+cd ~/.config/nixfiles
 hm            # 等同 home-manager switch --flake .#<username>@<hostname>
 ```
 
-**更新 template（拉取本 repo 的最新版本）**：
+#### **更新 template（拉取本 repo 的最新版本）**：
+
 ```bash
-cd ~/.config
+cd ~/.config/nixfiles
 nix flake update nixos-template
 update
 ```
 
-**清理舊世代**：
+#### **清理舊世代**：
+
 ```bash
 gc
 ```
