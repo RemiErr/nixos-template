@@ -162,10 +162,10 @@
     binds {
         // ── 應用程式 ─────────────────────────────────────────
         Mod+Return  { spawn "foot"; }
-        Mod+Space     hotkey-overlay-title="功能選單" { spawn-sh "dms ipc call spotlight toggle"; }
-        Mod+Ctrl+L     hotkey-overlay-title="鎖屏（Lock）" { spawn-sh "dms ipc call lock lock"; }
-        Mod+Ctrl+P     hotkey-overlay-title="電源選單（Power Menu）" { spawn-sh "dms ipc call powermenu toggle"; }
-        Mod+N             hotkey-overlay-title="通知（Notifications）" { spawn-sh "dms ipc call notifications toggle"; }
+        Mod+Space     hotkey-overlay-title="功能選單" { spawn-sh "noctalia msg panel-toggle launcher"; }
+        Mod+Ctrl+L     hotkey-overlay-title="鎖屏（Lock）" { spawn-sh "noctalia msg session lock"; }
+        Mod+Ctrl+P     hotkey-overlay-title="電源選單（Power Menu）" { spawn-sh "noctalia msg panel-toggle session"; }
+        Mod+N             hotkey-overlay-title="通知（Notifications）" { spawn-sh "noctalia msg panel-toggle control-center notifications"; }
 
         // 截圖（grim + slurp）
         Print          hotkey-overlay-title="截圖" { screenshot; }
@@ -173,8 +173,8 @@
         Alt+Print      hotkey-overlay-title="視窗截圖" { screenshot-window; }
         Mod+Shift+S    hotkey-overlay-title="選取範圍截圖" { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
 
-        // 剪貼簿歷史（DankMaterialShell 內建）
-        Mod+V hotkey-overlay-title="剪貼簿歷史" { spawn-sh "dms ipc call clipboard toggle"; }
+        // 剪貼簿歷史（Noctalia 內建）
+        Mod+V hotkey-overlay-title="剪貼簿歷史" { spawn-sh "noctalia msg panel-toggle clipboard"; }
 
         // ── 視窗焦點（vim 鍵 + 方向鍵）──────────────────────
         Mod+Left         hotkey-overlay-title="聚焦左邊視窗" { focus-column-left; }
@@ -240,16 +240,16 @@
         Mod+Ctrl+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="移動到下一個工作區" { move-column-to-workspace-down; }
         Mod+Ctrl+WheelScrollUp   cooldown-ms=150 hotkey-overlay-title="移動到上一個工作區" { move-column-to-workspace-up; }
 
-        // ── 系統媒體 / 音量 / 亮度（DankMaterialShell IPC）────
-        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "dms ipc call audio increment"; }
-        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "dms ipc call audio decrement"; }
-        XF86AudioMute         allow-when-locked=true { spawn-sh "dms ipc call audio mute"; }
-        XF86AudioMicMute      { spawn-sh "dms ipc call mic mute"; }
-        XF86MonBrightnessUp   { spawn-sh "dms ipc call brightness increment"; }
-        XF86MonBrightnessDown { spawn-sh "dms ipc call brightness decrement"; }
-        XF86AudioPlay         { spawn-sh "dms ipc call mpris playPause"; }
-        XF86AudioNext         { spawn-sh "dms ipc call mpris next"; }
-        XF86AudioPrev         { spawn-sh "dms ipc call mpris previous"; }
+        // ── 系統媒體 / 音量 / 亮度（Noctalia IPC）──────────────
+        XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
+        XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+        XF86AudioMute         allow-when-locked=true { spawn-sh "noctalia msg volume-mute"; }
+        XF86AudioMicMute      { spawn-sh "noctalia msg mic-mute"; }
+        XF86MonBrightnessUp   { spawn-sh "noctalia msg brightness-up"; }
+        XF86MonBrightnessDown { spawn-sh "noctalia msg brightness-down"; }
+        XF86AudioPlay         { spawn-sh "noctalia msg media toggle"; }
+        XF86AudioNext         { spawn-sh "noctalia msg media next"; }
+        XF86AudioPrev         { spawn-sh "noctalia msg media previous"; }
 
         // ── niri 說明 ────────────────────────────────────────
         Mod+Shift+Slash { show-hotkey-overlay; }
