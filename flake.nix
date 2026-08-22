@@ -8,6 +8,7 @@
         ./modules/system/wayland.nix
         ./modules/system/input-method.nix
         ./modules/system/users.nix
+        ./modules/system/gaming.nix
       ];
     };
 

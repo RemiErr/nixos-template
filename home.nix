@@ -75,6 +75,7 @@
     # 依清單順序設定各套件宣告支援的 MIME 預設應用程式。
     mimeApps = {
       enable = true;
+      defaultApplications."x-scheme-handler/steam" = "steam.desktop";
       defaultApplicationPackages = with pkgs; [
         thunar     # 目錄
         xarchiver  # 壓縮檔
