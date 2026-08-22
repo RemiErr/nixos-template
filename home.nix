@@ -79,6 +79,12 @@
     };
   };
 
+  # Niri 不會自動建立 screenshot-path 的父目錄。
+  home.activation.createScreenshotDirectory =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "${config.xdg.userDirs.pictures}/Screenshots"
+    '';
+
   # ── Git 設定 ─────────────────────────────────────────────────────
   programs.git = {
     enable = true;
