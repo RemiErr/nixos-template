@@ -136,6 +136,7 @@
     // v5 起 noctalia 已改為原生 C++/OpenGL、非 Qt/QML，故不再需要
     // QT_IM_MODULE=none / XMODIFIERS=@im=none 這組給 Qt 用的 IME workaround。
     spawn-at-startup "noctalia"
+    spawn-at-startup "nm-applet" "--indicator"
 
     prefer-no-csd
 
