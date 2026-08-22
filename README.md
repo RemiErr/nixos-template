@@ -191,7 +191,7 @@ nano variables.nix
 
 本篇預設 NixOS 使用 UEFI 開機，提供以下兩種結構的配置流程：
 - 方案一：[esp + swap + ext4](#21-linux-磁碟結構說明)
-- 方案二：[esp + btrfs](#22-linux-磁碟結構說明---btrfs)
+- 方案二：[esp + btrfs](#22-linux-磁碟結構說明--btrfs)
 
 ### 2.1 Linux 磁碟結構說明
 
