@@ -164,6 +164,7 @@ nix-shell -p git
 **填寫 `variables.nix`**：
 
 ```bash
+cp variables.nix.example variables.nix
 nano variables.nix
 ```
 
@@ -173,12 +174,22 @@ nano variables.nix
   hostname        = "my-machine";         # 主機名稱
   homeDirectory   = "/home/alice";        # 家目錄
   userDescription = "Alice";              # 顯示名稱
+  editor          = "vim";                # 預設編輯器
 
   git = {
     name  = "Alice";
     email = "alice@example.com";
   };
+
+  stateVersion = "26.05";
 }
+```
+
+`variables.nix` 已被 `.gitignore` 排除，但 Flake 仍必須從 Git index
+讀取它。編輯完成後將檔案加入 index，不需要 commit：
+
+```bash
+git add -f variables.nix
 ```
 
 > [!NOTE]
