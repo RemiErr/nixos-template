@@ -44,7 +44,8 @@
 
   # ── greetd 登入管理器（TUI 風格）────────────────────────────────
   services.greetd = {
-    enable = true;
+    enable         = true;
+    useTextGreeter = true;
     settings = {
       default_session = {
         # --remember：記住上次選擇的 session
