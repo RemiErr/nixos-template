@@ -119,6 +119,18 @@
         }
     }
 
+    // ── Niri session 應用環境變數 ───────────────────────────────
+    environment {
+        NIXOS_OZONE_WL "1"
+        MOZ_ENABLE_WAYLAND "1"
+        QT_QPA_PLATFORM "wayland;xcb"
+        QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+        SDL_VIDEODRIVER "wayland"
+        CLUTTER_BACKEND "wayland"
+        XDG_SESSION_TYPE "wayland"
+        XDG_CURRENT_DESKTOP "niri"
+    }
+
     // ── 啟動時執行 ──────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d" "--replace"
     // v5 起 noctalia 已改為原生 C++/OpenGL、非 Qt/QML，故不再需要

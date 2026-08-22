@@ -54,19 +54,6 @@
       };
     };
   };
-  # ── Wayland 全域環境變數 ─────────────────────────────────────────
-  # sessionVariables 在使用者登入時注入，影響所有圖形程式
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL                   = "1";          # Electron/Chromium Wayland
-    MOZ_ENABLE_WAYLAND               = "1";          # Firefox
-    QT_QPA_PLATFORM                  = "wayland;xcb"; # Qt Wayland，xcb 為後備
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";        # 讓 niri 管理視窗裝飾
-    SDL_VIDEODRIVER                  = "wayland";    # SDL2 遊戲
-    CLUTTER_BACKEND                  = "wayland";    # Clutter
-    XDG_SESSION_TYPE                 = "wayland";
-    XDG_CURRENT_DESKTOP              = "niri";
-  };
-
   # ── 系統字型（含中文）────────────────────────────────────────────
   fonts = {
     enableDefaultPackages = true;
