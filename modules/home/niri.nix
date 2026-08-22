@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    xwayland-satellite  # X11 應用程式相容層（無需重新編譯）
+    xwayland-satellite  # 供 Niri 原生按需啟動 X11 相容層
     swayidle            # 閒置後自動鎖屏
   ];
 
@@ -136,7 +136,6 @@
     // v5 起 noctalia 已改為原生 C++/OpenGL、非 Qt/QML，故不再需要
     // QT_IM_MODULE=none / XMODIFIERS=@im=none 這組給 Qt 用的 IME workaround。
     spawn-at-startup "noctalia"
-    spawn-at-startup "xwayland-satellite"
 
     prefer-no-csd
 
