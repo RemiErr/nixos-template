@@ -3,10 +3,10 @@
 {
   imports = [
     inputs.noctalia.homeModules.default  # Noctalia（桌面 shell，v5）
-    ../modules/home/niri.nix        # 視窗管理器與鍵位設定
-    ../modules/home/fish.nix       # Shell
-    ../modules/home/foot.nix       # 終端機
-    ../modules/home/fastfetch.nix   # 系統資訊
+    ./modules/home/niri.nix        # 視窗管理器與鍵位設定
+    ./modules/home/fish.nix       # Shell
+    ./modules/home/foot.nix       # 終端機
+    ./modules/home/fastfetch.nix   # 系統資訊
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
