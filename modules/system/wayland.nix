@@ -54,12 +54,6 @@
       };
     };
   };
-  # tuigreet 環境需要此設定才能正確渲染
-  environment.etc."greetd/environments".text = ''
-    niri-session
-    bash
-  '';
-
   # ── Wayland 全域環境變數 ─────────────────────────────────────────
   # sessionVariables 在使用者登入時注入，影響所有圖形程式
   environment.sessionVariables = {
