@@ -11,6 +11,6 @@
       ];
     };
 
-    homeModules.default = import ./home/default.nix;
+    homeModules.default = import ./home.nix;
   };
 }
