@@ -126,7 +126,7 @@
     settings = {
       shell = {
         font_family       = "JetBrainsMono Nerd Font";
-        time_format       = "%H\n%M";                # 對應舊 general.clockFormat = "hh\\nmm"
+        time_format       = "{:%H\n%M}";             # v5 使用 {:…} 時間格式，保留兩行顯示
         corner_radius_scale = 1.0;                     # 對應舊 general.radiusRatio
         telemetry_enabled = false;
         polkit_agent      = true;
