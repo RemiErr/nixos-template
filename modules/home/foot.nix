@@ -7,6 +7,7 @@
 
     settings = {
       main = {
+        include = "${pkgs.foot.themes}/share/foot/themes/tokyonight-night";
         term             = "foot";
         font             = "Maple Mono NF:size=13";
         dpi-aware        = "no";
@@ -35,6 +36,7 @@
         clipboard-paste = "BTN_RIGHT";
       };
 
+      # ── 終端外觀 ──────────────────────────────────────────────
       # 新版 foot 把 [colors] 拆成 [colors-dark]/[colors-light]
       colors-dark = {
         alpha  = "0.85";
