@@ -11,7 +11,6 @@
       "video"           # 螢幕亮度（brightnessctl）
       "audio"           # 音訊裝置
       "input"           # 輸入裝置（滑鼠/鍵盤事件）
-      "seat"            # seatd（部分 Wayland 環境需要）
       #"vboxsf"          # VirtualBox 共享資料夾
     ];
     shell = pkgs.fish;
