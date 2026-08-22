@@ -222,7 +222,5 @@
 
   # ── Home Manager 管理自身 ────────────────────────────────────────
   programs.home-manager.enable = true;
-
-  # !! 必須與 system.stateVersion 一致 !!
-  home.stateVersion = "26.05";
+  home.stateVersion = vars.stateVersion;
 }
