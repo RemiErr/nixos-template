@@ -2,17 +2,18 @@
 
 ## 架構概覽
 
-本 repo 是純 module provider，不包含可獨立建置的主機設定。外部 flake 負責：
+本 repo 是可重用的 module provider，不包含可獨立建置的主機設定。外部 flake 負責：
 
 - 宣告 `nixpkgs`、Home Manager 等 inputs
 - 建立 `nixosConfigurations`
 - 提供硬體設定與 `system.stateVersion`
 - 透過 `specialArgs` / `extraSpecialArgs` 傳入 `vars` 與 `inputs`
 
-本 repo 只輸出：
+本 repo 輸出：
 
 - `nixosModules.default`：彙整 `modules/system/`
 - `homeModules.default`：匯出 `home.nix`
+- `lib.mkAmdAiShell`：使用 consumer 傳入的 `pkgs` 建立 Python + AMD ROCm AI dev shell
 
 ## 目前桌面配置
 
@@ -24,7 +25,9 @@
 ## 目錄結構
 
 ```text
-flake.nix              # module exports
+flake.nix              # module 與 lib exports
+devshells/
+  amd-ai.nix           # Python、PyTorch 與 AMD ROCm 開發環境
 modules/system/
   common.nix           # Nix、開機、locale、基礎套件
   wayland.nix          # Plasma 6、SDDM Wayland、PipeWire、字型
@@ -49,6 +52,17 @@ specialArgs = { inherit inputs vars; };
 home-manager.extraSpecialArgs = { inherit inputs vars; };
 ```
 
+AMD ROCm AI shell 由 template 提供套件清單，但沿用 consumer 的 nixpkgs：
+
+```nix
+devShells.${system}.ai =
+  nixos-template.lib.mkAmdAiShell { inherit pkgs; };
+```
+
+`mkAmdAiShell` 內部使用 `pkgs.pkgsRocm`，template 不應為此新增獨立的
+`nixpkgs` input。`render`／`video` 群組、GPU 型號與 `gfx` workaround
+仍屬主機設定，應由 consumer 管理。
+
 若要重新啟用 Noctalia，除了在 `home.nix` 匯入
 `inputs.noctalia.homeModules.default` 與 `modules/home/noctalia.nix`，也必須：
 
@@ -62,6 +76,7 @@ home-manager.extraSpecialArgs = { inherit inputs vars; };
 - KDE 與 Niri 的登入管理器不可同時啟用；KDE 使用 SDDM，Niri 使用 greetd。
 - 桌面專屬的 Home Manager 模組應由 `home.nix` 集中控制是否匯入，避免停用桌面後仍啟動其 user service。
 - Plasma 6 會自行提供 KDE portal、KWallet、udisks2、XWayland 與主要 KDE 應用程式；調整 Niri 專屬服務時，不要覆蓋 Plasma 共用依賴。
-- 修改 module interface、flake input 或桌面切換流程時，必須同步更新 consumer 與本文件。
+- 可重用 dev shell 必須接收 consumer 的 `pkgs`，不要在 template 內另行鎖定 nixpkgs 或猜測特定 GPU 架構。
+- 修改 module/lib interface、flake input 或桌面切換流程時，必須同步更新 consumer 與本文件。
 
 實際版本、個人變數、硬體與建置指令由 `nixos-config` consumer 管理。
