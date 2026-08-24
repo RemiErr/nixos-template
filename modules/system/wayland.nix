@@ -1,13 +1,25 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
+  # ── KDE Plasma 6（Wayland）───────────────────────────────────────
+  services.desktopManager.plasma6.enable = true;
+
+  # 並將 Plasma Wayland session 設為預設
+  services.displayManager = {
+    sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
+    defaultSession = "plasma";
+  };
+
   # ── Niri 視窗管理器 ──────────────────────────────────────────────
   # 安裝 niri 並提供 Wayland session 入口（/usr/share/wayland-sessions/）
-  programs.niri.enable = true;
+  programs.niri.enable = false;
 
   # ── XDG Desktop Portal（Wayland 標準 D-Bus 服務）────────────────
   xdg.portal = {
-    enable        = true;
+    enable        = false;
     extraPortals  = with pkgs; [
       xdg-desktop-portal-gnome   # 檔案選擇、截圖等對話框
       xdg-desktop-portal-gtk     # GTK 後備
@@ -25,23 +37,26 @@
   # ── 輕量圖形檔案管理 ────────────────────────────────────
   # 只啟用 Thunar 與必要後端，不安裝完整 Xfce 桌面。
   programs.thunar = {
-    enable = true;
+    enable = false;
     plugins = with pkgs; [
       thunar-archive-plugin
       thunar-volman
     ];
   };
-  services.gvfs.enable    = true; # 回收站、遠端位置與掛載
-  services.tumbler.enable = true; # 檔案縮圖
-  services.udisks2.enable = true; # USB 等可移除儲存裝置
+  services.gvfs.enable    = false; # 回收站、遠端位置與掛載
+  services.tumbler.enable = false; # 檔案縮圖
+  services.udisks2.enable = false; # USB 等可移除儲存裝置
+
+  # 讓 Electron / Chromium 應用優先使用原生 Wayland。
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # ── 圖形加速 ────────────────────────────────────────────────────
   hardware.graphics = {
-    enable     = true;
+    enable      = true;
     enable32Bit = true;   # 32-bit 應用程式（如 Steam）相容
   };
 
-  # ── PipeWire 音訊（取代 PulseAudio）─────────────────────────────
+  # ── PipeWire 音訊 ───────────────────────────────────────────────
   security.rtkit.enable = true;
   services.pipewire = {
     enable            = true;
@@ -53,12 +68,12 @@
 
   # ── 系統安全 ────────────────────────────────────────────────────
   security.polkit.enable = true;          # 應用程式權限請求
-  services.gnome.gnome-keyring.enable = true;  # 密鑰儲存（SSH/GPG）
+  services.gnome.gnome-keyring.enable = false;  # 密鑰儲存（SSH/GPG）
 
   # ── greetd 登入管理器（TUI 風格）────────────────────────────────
   services.greetd = {
-    enable         = true;
-    useTextGreeter = true;
+    enable         = false;
+    useTextGreeter = false;
     settings = {
       default_session = {
         # --remember：記住上次成功登入的使用者名稱
@@ -67,6 +82,7 @@
       };
     };
   };
+
   # ── 系統字型（含中文）────────────────────────────────────────────
   fonts = {
     enableDefaultPackages = true;
@@ -76,12 +92,10 @@
       noto-fonts-cjk-serif      # 中文襯線體
       noto-fonts-color-emoji
       liberation_ttf
-      # JetBrains Mono Nerd Font（終端機 / 程式碼）
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
-      # v5 起 noctalia 已內建 Tabler icon 字型（noctalia-tabler-icons.ttf），供圖示使用。
-      lxgw-wenkai-screen           # 霞鶩文楷（繁體中文顯示字型）
-      maple-mono.NF-unhinted       # Maple Mono NF
+      lxgw-wenkai-screen        # 霞鶩文楷（繁體中文顯示字型）
+      maple-mono.NF-unhinted    # Maple Mono NF
     ];
     fontconfig = {
       defaultFonts = {

@@ -1,12 +1,13 @@
-{ config, pkgs, inputs, lib, vars, ... }:
+{ config, pkgs, vars, ... }:
 
 {
   imports = [
-    inputs.noctalia.homeModules.default  # Noctalia（桌面 shell，v5）
-    ./modules/home/niri.nix        # 視窗管理器與鍵位設定
-    ./modules/home/fish.nix       # Shell
-    ./modules/home/foot.nix       # 終端機
-    ./modules/home/fastfetch.nix   # 系統資訊
+    # inputs.noctalia.homeModules.default  # Noctalia（桌面 shell，v5）
+    # ./modules/home/noctalia.nix
+    # ./modules/home/niri.nix
+    ./modules/home/fish.nix
+    # ./modules/home/foot.nix
+    ./modules/home/fastfetch.nix
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
@@ -21,9 +22,9 @@
   # ── 共用工具套件 ─────────────────────────────────────────────────
   home.packages = with pkgs; [
     # Wayland 截圖工具組
-    grim          # 截圖（整個螢幕或指定區域）
-    slurp         # 互動式選取區域
-    swappy        # 截圖後標註工具
+    # grim          # 截圖（整個螢幕或指定區域）
+    # slurp         # 互動式選取區域
+    # swappy        # 截圖後標註工具
 
     # 剪貼簿
     wl-clipboard  # wl-copy / wl-paste
@@ -45,18 +46,18 @@
     btop
 
     # 網路工具
-    networkmanagerapplet  # 系統匣網路圖示
+    # networkmanagerapplet  # 系統匣網路圖示
 
     # 檔案管理器
     yazi          # 終端機檔案管理器
 
     # 文件與壓縮檔
-    mousepad      # 輕量圖形文字編輯器
-    zathura       # 輕量 PDF 閱讀器
-    xarchiver     # 圖形壓縮檔管理器
+    # mousepad      # 輕量圖形文字編輯器
+    # zathura       # 輕量 PDF 閱讀器
+    # xarchiver     # 圖形壓縮檔管理器
 
     # 圖片檢視
-    imv           # Wayland 原生圖片檢視器
+    # imv           # Wayland 原生圖片檢視器
 
     # 影片播放（選用）
     # mpv
@@ -76,13 +77,13 @@
       enable = true;
       defaultApplications."x-scheme-handler/steam" = "steam.desktop";
       defaultApplicationPackages = with pkgs; [
-        thunar     # 目錄
-        xarchiver  # 壓縮檔
-        zathura    # PDF
-        mousepad   # 文字
-        imv        # 圖片
-        vlc        # 影音
-        firefox    # Web 與 URL scheme
+        kdePackages.dolphin   # 目錄
+        kdePackages.ark       # 壓縮檔
+        kdePackages.okular    # PDF
+        kdePackages.kate      # 文字
+        kdePackages.gwenview  # 圖片
+        vlc                   # 影音
+        firefox               # Web 與 URL scheme
       ];
     };
     userDirs = {
@@ -98,10 +99,10 @@
   };
 
   # Niri 自動建立截圖的父目錄。
-  home.activation.createScreenshotDirectory =
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD mkdir -p "${config.xdg.userDirs.pictures}/Screenshots"
-    '';
+  # home.activation.createScreenshotDirectory =
+  #   lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #     $DRY_RUN_CMD mkdir -p "${config.xdg.userDirs.pictures}/Screenshots"
+  #   '';
 
   # ── Git 設定 ─────────────────────────────────────────────────────
   programs.git = {
