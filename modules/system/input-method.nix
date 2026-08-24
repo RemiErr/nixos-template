@@ -6,7 +6,7 @@
   # NixOS 會自動：
   #   1. 安裝 fcitx5 及指定附加元件
   #   2. 注入必要環境變數
-  # Fcitx5 的生命週期由 Niri spawn-at-startup 管理。
+  #   3. 透過 XDG autostart 啟動
   #
   i18n.inputMethod = {
     enable = true;
@@ -28,7 +28,7 @@
   #
   # waylandFrontend = true 時：
   #   GTK4 / Qt6 透過 Wayland text-input-v3 協定自動使用 fcitx5
-  #   XMODIFIERS 供 xwayland-satellite 轉發的 X11 使用
+  #   XMODIFIERS 供 XWayland 應用程式使用
   #
   environment.sessionVariables = {
     XMODIFIERS     = "@im=fcitx";
