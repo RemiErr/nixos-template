@@ -87,7 +87,5 @@
     ];
   };
 
-  # ── Home Manager 管理自身 ────────────────────────────────────────
-  programs.home-manager.enable = true;
   home.stateVersion = vars.stateVersion;
 }
