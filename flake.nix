@@ -13,5 +13,8 @@
     };
 
     homeModules.default = import ./home.nix;
+
+    lib.mkAmdAiShell = { pkgs }:
+      import ./devshells/amd-ai.nix { inherit pkgs; };
   };
 }
