@@ -19,19 +19,19 @@
 
   # ── XDG Desktop Portal（Wayland 標準 D-Bus 服務）────────────────
   xdg.portal = {
-    enable        = false;
-    extraPortals  = with pkgs; [
-      xdg-desktop-portal-gnome   # 檔案選擇、截圖等對話框
-      xdg-desktop-portal-gtk     # GTK 後備
-    ];
-    config = {
-      niri = {
-        default = [ "gnome" "gtk" ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
-        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-      };
-      common.default = [ "gtk" ];
-    };
+    enable        = true;
+    # extraPortals  = with pkgs; [
+    #   xdg-desktop-portal-gnome   # 檔案選擇、截圖等對話框
+    #   xdg-desktop-portal-gtk     # GTK 後備
+    # ];
+    # config = {
+    #   niri = {
+    #     default = [ "gnome" "gtk" ];
+    #     "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+    #     "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+    #   };
+    #   common.default = [ "gtk" ];
+    # };
   };
 
   # ── 輕量圖形檔案管理 ────────────────────────────────────
@@ -45,7 +45,7 @@
   };
   services.gvfs.enable    = false; # 回收站、遠端位置與掛載
   services.tumbler.enable = false; # 檔案縮圖
-  services.udisks2.enable = false; # USB 等可移除儲存裝置
+  services.udisks2.enable = true; # USB 等可移除儲存裝置
 
   # 讓 Electron / Chromium 應用優先使用原生 Wayland。
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
@@ -68,7 +68,7 @@
 
   # ── 系統安全 ────────────────────────────────────────────────────
   security.polkit.enable = true;          # 應用程式權限請求
-  services.gnome.gnome-keyring.enable = false;  # 密鑰儲存（SSH/GPG）
+  services.gnome.gnome-keyring.enable = true;  # 密鑰儲存（SSH/GPG）
 
   # ── greetd 登入管理器（TUI 風格）────────────────────────────────
   services.greetd = {
