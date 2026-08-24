@@ -2,9 +2,9 @@
 
 這是一份採用了以下方案的 Flakes 模板。
 
-- 視窗管理器：[Niri](https://github.com/YaLTeR/niri)（磁磚式 Wayland WM）
-- 桌面 Shell：[Noctalia Shell](https://github.com/noctalia-dev/noctalia)
-- 終端機：Foot + Fish shell
+- 桌面環境：[KDE Plasma 6](https://kde.org/plasma-desktop/)（預設 Wayland session）
+- 登入管理器：SDDM（Wayland）
+- 終端機：Konsole / Foot + Fish shell
 - 輸入法：fcitx5 + 新注音（Chewing）
 - 字型：Maple Mono NF / JetBrainsMono Nerd Font
 
@@ -17,7 +17,7 @@
 請 clone 該專案：[nixos-config](https://github.com/RemiErr/nixos-config)
 
 ```bash
-git clone https://github.com/RemiErr/nixos-config.git ~/.config/nixfiles
+git clone --branch dev/kde-plasma https://github.com/RemiErr/nixos-config.git ~/.config/nixfiles
 ```
 
 並使用 `~/.config/nixfiles` 目錄作為你的 overlay 起點，其中 `variables.nix` 用於存放系統參數，**請記得先填寫它**。
@@ -60,17 +60,15 @@ git clone https://github.com/RemiErr/nixos-config.git ~/.config/nixfiles
 │
 ├─ nixos-template.nixosModules.default
 │  ├─ common.nix                      Nix、開機、locale、SSH、基礎工具
-│  ├─ wayland.nix                     Niri、greetd、PipeWire、portal、字型
+│  ├─ wayland.nix                     Plasma 6、SDDM、PipeWire、字型
 │  ├─ input-method.nix                Fcitx5 + Chewing
-│  └─ users.nix                       使用者、sudo、NetworkManager
+│  ├─ users.nix                       使用者、sudo、NetworkManager
+│  └─ gaming.nix                      Steam、Gamescope、GameMode
 │
 └─ Home Manager
    └─ nixos-template.homeModules.default
-      ├─ Noctalia Shell
-      ├─ niri.nix
       ├─ fish.nix
       ├─ foot.nix
-      ├─ hyprlock.nix
       └─ fastfetch.nix
 ```
 
@@ -152,7 +150,7 @@ nmcli device wifi connect "SSID名稱" password "密碼"
 ### 1.5 Clone overlay 並設定 variables.nix
 
 ```bash
-git clone https://github.com/RemiErr/nixos-config ~/.config/nixfiles
+git clone --branch dev/kde-plasma https://github.com/RemiErr/nixos-config ~/.config/nixfiles
 cd ~/.config/nixfiles
 ```
 
