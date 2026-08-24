@@ -26,6 +26,9 @@
 
   # ── 共用工具套件 ─────────────────────────────────────────────────
   home.packages = with pkgs; [
+    # Home Manager 管理自己
+    inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+
     # Wayland 截圖工具組
     grim          # 截圖（整個螢幕或指定區域）
     slurp         # 互動式選取區域
@@ -197,9 +200,6 @@
       };
     };
   };
-
-  # ── Home Manager 管理自身 ────────────────────────────────────────
-  programs.home-manager.enable = true;
 
   # !! 必須與 system.stateVersion 一致 !!
   home.stateVersion = "26.05";
