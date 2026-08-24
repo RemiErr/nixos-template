@@ -8,6 +8,7 @@
     ./modules/home/fish.nix
     # ./modules/home/foot.nix
     ./modules/home/fastfetch.nix
+    ./modules/home/packages.nix
   ];
 
   # ── 使用者資訊 ───────────────────────────────────────────────────
