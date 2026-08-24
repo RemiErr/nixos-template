@@ -14,6 +14,7 @@
       flakeup = "nix flake update";
       gc      = "sudo nix-collect-garbage --delete-older-than 30d && nix-collect-garbage --delete-older-than 30d";
       gens    = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+      rb      = "update";
     };
 
     interactiveShellInit = ''
