@@ -7,6 +7,7 @@
 - 終端機：Konsole / Foot + Fish shell
 - 輸入法：fcitx5 + 新注音（Chewing）
 - 字型：Maple Mono NF / JetBrainsMono Nerd Font
+- 開發環境：可選的 Python + AMD ROCm AI dev shell
 
 ---
 
@@ -21,6 +22,24 @@ git clone --branch dev/kde-plasma https://github.com/RemiErr/nixos-config.git ~/
 ```
 
 並使用 `~/.config/nixfiles` 目錄作為你的 overlay 起點，其中 `variables.nix` 用於存放系統參數，**請記得先填寫它**。
+
+### AMD ROCm AI dev shell（選用）
+
+consumer 可沿用自己的 nixpkgs，呼叫 template 提供的 shell factory：
+
+```nix
+devShells.${system}.ai =
+  nixos-template.lib.mkAmdAiShell { inherit pkgs; };
+```
+
+進入環境：
+
+```bash
+nix develop .#ai
+```
+
+主機使用者仍需具備 `video` 與 `render` 群組權限；GPU 型號專屬的
+`HSA_OVERRIDE_GFX_VERSION` 等 workaround 不由 template 預設。
 
 ---
 
@@ -57,6 +76,9 @@ git clone --branch dev/kde-plasma https://github.com/RemiErr/nixos-config.git ~/
 │
 ├─ variables.nix                      個人與主機參數
 ├─ hardware-configuration.nix         機器硬體設定
+│
+├─ nixos-template.lib.mkAmdAiShell
+│  └─ devshells/amd-ai.nix             Python + AMD ROCm AI dev shell
 │
 ├─ nixos-template.nixosModules.default
 │  ├─ common.nix                      Nix、開機、locale、SSH、基礎工具
